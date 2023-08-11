@@ -1,0 +1,1959 @@
+{
+  "globals": {
+    "BID": [
+      "Building identifier",
+      "str",
+      "NL.IMBAG.Pand.1676100000437038"
+    ],
+    "CITYJSON_SCALE_X": [
+      "",
+      "float",
+      0.0010000000474974513
+    ],
+    "CITYJSON_SCALE_Y": [
+      "",
+      "float",
+      0.0010000000474974513
+    ],
+    "CITYJSON_SCALE_Z": [
+      "",
+      "float",
+      0.0010000000474974513
+    ],
+    "CITYJSON_TRANSLATE_X": [
+      "",
+      "float",
+      171800.0
+    ],
+    "CITYJSON_TRANSLATE_Y": [
+      "",
+      "float",
+      472700.0
+    ],
+    "CITYJSON_TRANSLATE_Z": [
+      "",
+      "float",
+      0.0
+    ],
+    "GF_PROCESS_CRS": [
+      "",
+      "str",
+      "EPSG:7415"
+    ],
+    "GF_PROCESS_OFFSET_OVERRIDE": [
+      "",
+      "bool",
+      true
+    ],
+    "GF_PROCESS_OFFSET_X": [
+      "offset in X coordinate",
+      "float",
+      37470.0
+    ],
+    "GF_PROCESS_OFFSET_Y": [
+      "offset in Y coordinate",
+      "float",
+      414780.5
+    ],
+    "GF_PROCESS_OFFSET_Z": [
+      "offset in Z coordinate",
+      "float",
+      0.0
+    ],
+    "GROUND_ELEVATION": [
+      "",
+      "float",
+      6.244999885559082
+    ],
+    "INPUT_FOOTPRINT": [
+      "",
+      "str",
+      "/mnt/Data/LocalData/temp/one/crop/NL.IMBAG.Pand.1676100000437038.gpkg"
+    ],
+    "INPUT_POINTCLOUD": [
+      "",
+      "str",
+      "/mnt/Data/LocalData/temp/one/crop/NL.IMBAG.Pand.1676100000437038_AHN3.las"
+    ],
+    "OUTPUT_CRS": [
+      "",
+      "str",
+      "EPSG:7415"
+    ],
+    "OUTPUT_JSONL": [
+      "",
+      "str",
+      "/mnt/Data/LocalData/temp/one/reconstruct/NL.IMBAG.Pand.1676100000437038.city.jsonl"
+    ],
+    "clip_ground": [
+      "",
+      "bool",
+      true
+    ],
+    "line_detect__epsilon": [
+      "",
+      "float",
+      1.0
+    ],
+    "lod13__step_height": [
+      "",
+      "float",
+      3.0
+    ],
+    "lod1_extrude_to_max": [
+      "",
+      "bool",
+      false
+    ],
+    "normal_estimate__k": [
+      "",
+      "int",
+      5
+    ],
+    "optimisation_data_term": [
+      "",
+      "float",
+      8.0
+    ],
+    "plane_detect__epsilon": [
+      "",
+      "float",
+      0.30000001192092896
+    ],
+    "plane_detect__k": [
+      "",
+      "int",
+      15
+    ],
+    "plane_detect__min_points": [
+      "",
+      "int",
+      15
+    ],
+    "plane_detect__normal_angle": [
+      "",
+      "float",
+      0.75
+    ],
+    "plane_detect_ransac": [
+      "",
+      "bool",
+      false
+    ],
+    "skip_attribute_name": [
+      "",
+      "str",
+      "kas_warenhuis"
+    ],
+    "skip_lod12": [
+      "",
+      "bool",
+      false
+    ],
+    "skip_lod13": [
+      "",
+      "bool",
+      false
+    ],
+    "skip_lod22": [
+      "",
+      "bool",
+      false
+    ],
+    "thin_nth": [
+      "",
+      "int",
+      0
+    ],
+    "thres_alpha": [
+      "",
+      "float",
+      0.25
+    ],
+    "thres_reg_line_dist": [
+      "",
+      "float",
+      0.800000011920929
+    ],
+    "thres_reg_line_ext": [
+      "",
+      "float",
+      3.0
+    ],
+    "thres_tri_snap": [
+      "",
+      "float",
+      0.05000000074505806
+    ],
+    "thres_triangulate_snap": [
+      "",
+      "int",
+      4
+    ],
+    "thres_val3dity_d2p": [
+      "",
+      "float",
+      0.0010000000474974513
+    ]
+  },
+  "nodes": {
+    "AlphaShape": {
+      "connections": {
+        "alpha_rings": [
+          [
+            "DetectLines",
+            "edge_points"
+          ],
+          [
+            "SegmentRasterise",
+            "alpha_rings"
+          ],
+          [
+            "SkipReplaceTester",
+            "alpha_rings"
+          ]
+        ],
+        "alpha_triangles": [
+          [
+            "SegmentRasterise",
+            "triangles"
+          ]
+        ],
+        "roofplane_ids": [
+          [
+            "DetectLines",
+            "roofplane_ids"
+          ],
+          [
+            "SegmentRasterise",
+            "roofplane_ids"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "pts_per_roofplane": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "alpha_edges": false,
+        "alpha_rings": false,
+        "alpha_triangles": false,
+        "boundary_points": false,
+        "edge_points": false,
+        "roofplane_ids": false,
+        "segment_ids": false
+      },
+      "parameters": {
+        "extract_polygons": true,
+        "optimal_alpha": false,
+        "optimal_only_if_needed": true,
+        "thres_alpha": "{{thres_alpha}}"
+      },
+      "position": [
+        1263.1005859375,
+        186.20001220703125
+      ],
+      "type": [
+        "building-reconstruction",
+        "AlphaShape"
+      ]
+    },
+    "AlphaShape-ground": {
+      "connections": {
+        "alpha_triangles": [
+          [
+            "SegmentRasterise",
+            "ground_triangles"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "pts_per_roofplane": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "alpha_edges": false,
+        "alpha_rings": false,
+        "alpha_triangles": false,
+        "boundary_points": false,
+        "edge_points": false,
+        "roofplane_ids": false,
+        "segment_ids": false
+      },
+      "parameters": {
+        "extract_polygons": false,
+        "optimal_alpha": false,
+        "optimal_only_if_needed": true,
+        "thres_alpha": 0.25
+      },
+      "position": [
+        1271.0,
+        520.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "AlphaShape"
+      ]
+    },
+    "ArrDissolve-LoD13": {
+      "connections": {
+        "arrangement": [
+          [
+            "TriSnap-LoD13",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "heightfield": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "global_elevation_50p": false,
+        "global_elevation_70p": false,
+        "global_elevation_97p": false,
+        "global_elevation_max": false,
+        "global_elevation_min": false
+      },
+      "parameters": {
+        "dissolve_all_interior": false,
+        "dissolve_outside_fp": true,
+        "dissolve_seg_edges": true,
+        "dissolve_step_edges": true,
+        "skip_execution": "{{skip_lod13}}",
+        "step_height_threshold": "{{lod13__step_height}}"
+      },
+      "position": [
+        2856.0,
+        243.65283203125
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrDissolve"
+      ]
+    },
+    "ArrDissolve-LoD22": {
+      "connections": {
+        "arrangement": [
+          [
+            "TriSnap-LoD22",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "heightfield": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "global_elevation_50p": false,
+        "global_elevation_70p": false,
+        "global_elevation_97p": false,
+        "global_elevation_max": false,
+        "global_elevation_min": false
+      },
+      "parameters": {
+        "dissolve_all_interior": false,
+        "dissolve_outside_fp": true,
+        "dissolve_seg_edges": true,
+        "dissolve_step_edges": false,
+        "skip_execution": "{{skip_lod22}}",
+        "step_height_threshold": 1.0
+      },
+      "position": [
+        2857.0,
+        578.65283203125
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrDissolve"
+      ]
+    },
+    "ArrDissolveLoD12": {
+      "connections": {
+        "arrangement": [
+          [
+            "TriSnap-LoD12",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "heightfield": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "global_elevation_50p": true,
+        "global_elevation_70p": true,
+        "global_elevation_97p": false,
+        "global_elevation_max": false,
+        "global_elevation_min": false
+      },
+      "parameters": {
+        "dissolve_all_interior": true,
+        "dissolve_outside_fp": true,
+        "dissolve_seg_edges": false,
+        "dissolve_step_edges": false,
+        "skip_execution": "{{skip_lod12}}",
+        "step_height_threshold": 1.0
+      },
+      "position": [
+        2853.0,
+        -77.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrDissolve"
+      ]
+    },
+    "ArrExtrLoD12": {
+      "connections": {
+        "multisolid": [
+          [
+            "FacesSelector-LoD12",
+            "faces_B"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "floor_elevation": true
+      },
+      "marked_outputs": {
+        "faces": false,
+        "labels": false,
+        "mesh": false,
+        "multisolid": false
+      },
+      "parameters": {
+        "LoD2": false,
+        "do_floor": true,
+        "do_roofs": true,
+        "do_walls": true,
+        "lod1_extrude_to_max": "{{lod1_extrude_to_max}}",
+        "snap_tolerance_exp": "{{thres_triangulate_snap}}"
+      },
+      "position": [
+        3245.0,
+        -41.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrExtruder"
+      ]
+    },
+    "ArrExtruder-LoD13": {
+      "connections": {
+        "multisolid": [
+          [
+            "FacesSelector-LoD13",
+            "faces_B"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "floor_elevation": true
+      },
+      "marked_outputs": {
+        "faces": false,
+        "labels": false,
+        "mesh": false,
+        "multisolid": false
+      },
+      "parameters": {
+        "LoD2": false,
+        "do_floor": true,
+        "do_roofs": true,
+        "do_walls": true,
+        "lod1_extrude_to_max": "{{lod1_extrude_to_max}}",
+        "snap_tolerance_exp": "{{thres_triangulate_snap}}"
+      },
+      "position": [
+        3243.39990234375,
+        426.2528076171875
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrExtruder"
+      ]
+    },
+    "ArrExtruder-LoD22": {
+      "connections": {
+        "multisolid": [
+          [
+            "FacesSelector-LoD22",
+            "faces_B"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "floor_elevation": true
+      },
+      "marked_outputs": {
+        "faces": false,
+        "labels": false,
+        "mesh": false,
+        "multisolid": false
+      },
+      "parameters": {
+        "LoD2": true,
+        "do_floor": true,
+        "do_roofs": true,
+        "do_walls": true,
+        "lod1_extrude_to_max": false,
+        "snap_tolerance_exp": "{{thres_triangulate_snap}}"
+      },
+      "position": [
+        3243.39990234375,
+        926.2528076171875
+      ],
+      "type": [
+        "building-reconstruction",
+        "ArrExtruder"
+      ]
+    },
+    "AttributeTester": {
+      "connections": {
+        "result": [
+          [
+            "AlphaShape-ground",
+            "skip"
+          ],
+          [
+            "AlphaShape",
+            "skip"
+          ],
+          [
+            "SkipReplaceTester",
+            "skip"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "attributes": true
+      },
+      "marked_outputs": {
+        "result": false
+      },
+      "parameters": {
+        "attribute_name": "{{skip_attribute_name}}"
+      },
+      "position": [
+        962.5,
+        62.3179931640625
+      ],
+      "type": [
+        "building-reconstruction",
+        "AttributeTester"
+      ]
+    },
+    "BuildArrFromLines": {
+      "connections": {
+        "arrangement": [
+          [
+            "OptimiseArrangmentGrid",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "footprint": true,
+        "lines": false
+      },
+      "marked_outputs": {
+        "arr_complexity": false,
+        "arrangement": false
+      },
+      "parameters": {
+        "dist_threshold_exp": 2,
+        "fp_extension": 0.0,
+        "insert_lines": true,
+        "insert_with_snap": false,
+        "max_arr_complexity": 400
+      },
+      "position": [
+        2443.19970703125,
+        246.30029296875
+      ],
+      "type": [
+        "building-reconstruction",
+        "BuildArrFromLines"
+      ]
+    },
+    "CityJSONFeatureWriter": {
+      "marked_inputs": {
+        "attributes": false,
+        "footprints": false,
+        "geometry_lod12": false,
+        "geometry_lod13": false,
+        "geometry_lod22": false,
+        "part_attributes": false
+      },
+      "parameters": {
+        "CRS": "{{OUTPUT_CRS}}",
+        "filepath": "{{OUTPUT_JSONL}}",
+        "identifier_attribute": "identificatie",
+        "only_output_renamed": true,
+        "output_attribute_names": {
+          "DetectPlanes.roof_elevation_50p": "b3_h_dak_50p",
+          "DetectPlanes.roof_elevation_70p": "b3_h_dak_70p",
+          "DetectPlanes.roof_elevation_max": "b3_h_dak_max",
+          "DetectPlanes.roof_elevation_min": "b3_h_dak_min",
+          "DetectPlanes.roof_type": "b3_dak_type",
+          "Ground_elevation.value": "b3_h_maaiveld",
+          "OGRLoader.begingeldigheid": "begingeldigheid",
+          "OGRLoader.documentdatum": "documentdatum",
+          "OGRLoader.documentnummer": "documentnummer",
+          "OGRLoader.eindgeldigheid": "eindgeldigheid",
+          "OGRLoader.eindregistratie": "eindregistratie",
+          "OGRLoader.geconstateerd": "geconstateerd",
+          "OGRLoader.identificatie": "identificatie",
+          "OGRLoader.is_mutated_DIM_AHN4": "b3_mutatie_dim_ahn4",
+          "OGRLoader.kas_warenhuis": "b3_kas_warenhuis",
+          "OGRLoader.nodata_frac_AHN3": "b3_nodata_fractie_ahn3",
+          "OGRLoader.nodata_frac_AHN4": "b3_nodata_fractie_ahn4",
+          "OGRLoader.nodata_r_AHN3": "b3_nodata_radius_ahn3",
+          "OGRLoader.nodata_r_AHN4": "b3_nodata_radius_ahn4",
+          "OGRLoader.oorspronkelijkbouwjaar": "oorspronkelijkbouwjaar",
+          "OGRLoader.pc_select": "b3_pw_selectie_reden",
+          "OGRLoader.pc_source": "b3_pw_bron",
+          "OGRLoader.pc_year": "b3_pw_datum",
+          "OGRLoader.pt_density_AHN3": "b3_puntdichtheid_ahn3",
+          "OGRLoader.pt_density_AHN4": "b3_puntdichtheid_ahn4",
+          "OGRLoader.status": "status",
+          "OGRLoader.tijdstipeindregistratielv": "tijdstipeindregistratielv",
+          "OGRLoader.tijdstipinactief": "tijdstipinactief",
+          "OGRLoader.tijdstipinactieflv": "tijdstipinactieflv",
+          "OGRLoader.tijdstipnietbaglv": "tijdstipnietbaglv",
+          "OGRLoader.tijdstipregistratie": "tijdstipregistratie",
+          "OGRLoader.tijdstipregistratielv": "tijdstipregistratielv",
+          "OGRLoader.voorkomenidentificatie": "voorkomenidentificatie",
+          "PC2MeshQuality-LoD12.mesh_error_f": "b3_rmse_lod12",
+          "PC2MeshQuality-LoD13.mesh_error_f": "b3_rmse_lod13",
+          "PC2MeshQuality-LoD22.mesh_error_f": "b3_rmse_lod22",
+          "PolygonTriangulator-LoD12.volumes": "b3_volume_lod12",
+          "PolygonTriangulator-LoD13.volumes": "b3_volume_lod13",
+          "PolygonTriangulator-LoD22.volumes": "b3_volume_lod22",
+          "SkipReplaceTester.skip": "b3_reconstructie_onvolledig",
+          "Validator-LoD12.errors": "b3_val3dity_lod12",
+          "Validator-LoD13.errors": "b3_val3dity_lod13",
+          "Validator-LoD22.errors": "b3_val3dity_lod22"
+        },
+        "prettyPrint": false,
+        "scale_x": "{{CITYJSON_SCALE_X}}",
+        "scale_y": "{{CITYJSON_SCALE_Y}}",
+        "scale_z": "{{CITYJSON_SCALE_Z}}",
+        "translate_x": "{{CITYJSON_TRANSLATE_X}}",
+        "translate_y": "{{CITYJSON_TRANSLATE_Y}}",
+        "translate_z": "{{CITYJSON_TRANSLATE_Z}}"
+      },
+      "position": [
+        4605.0,
+        348.0
+      ],
+      "type": [
+        "CoreIO",
+        "CityJSONFeatureWriter"
+      ]
+    },
+    "DetectLines": {
+      "connections": {
+        "edge_segments": [
+          [
+            "RegulariseLines",
+            "edge_segments"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "edge_points": false,
+        "pts_per_roofplane": false,
+        "roofplane_ids": false
+      },
+      "marked_outputs": {
+        "edge_segments": false,
+        "is_start": false,
+        "lines3d": false,
+        "ring_edges": false,
+        "ring_id": false,
+        "ring_idx": false,
+        "ring_order": false
+      },
+      "parameters": {
+        "dist_thres": "{{line_detect__epsilon}}",
+        "k": 10,
+        "line_extend": 0.05000000074505806,
+        "min_cnt_range_lower": 5,
+        "min_cnt_range_upper": 10,
+        "perform_chaining": true,
+        "remove_overlap": true,
+        "snap_threshold": 1.0
+      },
+      "position": [
+        1656.3016357421875,
+        236.7999267578125
+      ],
+      "type": [
+        "building-reconstruction",
+        "DetectLines"
+      ]
+    },
+    "DetectPlanes": {
+      "connections": {
+        "plane_adj": [
+          [
+            "PlaneIntersect",
+            "plane_adj"
+          ]
+        ],
+        "pts_per_roofplane": [
+          [
+            "AlphaShape",
+            "pts_per_roofplane"
+          ],
+          [
+            "DetectLines",
+            "pts_per_roofplane"
+          ],
+          [
+            "PC2MeshQuality-LoD11",
+            "ipoints"
+          ],
+          [
+            "PC2MeshQuality-LoD12",
+            "ipoints"
+          ],
+          [
+            "PC2MeshQuality-LoD13",
+            "ipoints"
+          ],
+          [
+            "OptimiseArrangmentGrid",
+            "pts_per_roofplane"
+          ],
+          [
+            "PC2MeshQuality-LoD22",
+            "ipoints"
+          ],
+          [
+            "PlaneIntersect",
+            "pts_per_roofplane"
+          ],
+          [
+            "SegmentRasterise",
+            "pts_per_roofplane"
+          ]
+        ],
+        "roof_elevation_50p": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "roof_elevation_70p": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "roof_elevation_max": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ],
+          [
+            "LOD1Extruder-LoD11",
+            "roof_elevation"
+          ]
+        ],
+        "roof_elevation_min": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "roof_pt_cnt": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "roof_type": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ],
+          [
+            "SkipReplaceTester",
+            "roof_type"
+          ]
+        ],
+        "unsegmented_pt_cnt": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "wall_pt_cnt": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "points": true
+      },
+      "marked_outputs": {
+        "horiz_roofplane_cnt": false,
+        "is_horizontal": false,
+        "is_wall": false,
+        "plane_adj": false,
+        "plane_id": false,
+        "pts_per_roofplane": false,
+        "roof_elevation_50p": false,
+        "roof_elevation_70p": false,
+        "roof_elevation_max": false,
+        "roof_elevation_min": false,
+        "roof_pt_cnt": false,
+        "roof_type": false,
+        "slant_roofplane_cnt": false,
+        "total_roofplane_cnt": false,
+        "unsegmented_pt_cnt": false,
+        "wall_pt_cnt": false
+      },
+      "parameters": {
+        "horiz_min_count": 0.949999988079071,
+        "maximum_angle": 25.0,
+        "maximum_offset": 0.5,
+        "metrics_cluster_epsilon_ransac": 0.20000000298023224,
+        "metrics_is_horizontal_threshold": 0.9700000286102295,
+        "metrics_is_wall_threshold": 0.30000001192092896,
+        "metrics_normal_k": "{{normal_estimate__k}}",
+        "metrics_plane_epsilon": "{{plane_detect__epsilon}}",
+        "metrics_plane_k": "{{plane_detect__k}}",
+        "metrics_plane_min_points": "{{plane_detect__min_points}}",
+        "metrics_plane_normal_threshold": "{{plane_detect__normal_angle}}",
+        "metrics_probability_ransac": 0.05000000074505806,
+        "n_refit": 5,
+        "regularize_axis_symmetry": false,
+        "regularize_coplanarity": false,
+        "regularize_orthogonality": false,
+        "regularize_parallelism": false,
+        "use_ransac": "{{plane_detect_ransac}}"
+      },
+      "position": [
+        902.0,
+        139.79998779296875
+      ],
+      "type": [
+        "building-reconstruction",
+        "DetectPlanes"
+      ]
+    },
+    "DetectPlanes-ground": {
+      "connections": {
+        "pts_per_roofplane": [
+          [
+            "AlphaShape-ground",
+            "pts_per_roofplane"
+          ],
+          [
+            "OptimiseArrangmentGrid",
+            "ground_pts_per_roofplane"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "points": true
+      },
+      "marked_outputs": {
+        "horiz_roofplane_cnt": false,
+        "is_horizontal": false,
+        "is_wall": false,
+        "plane_adj": false,
+        "plane_id": false,
+        "pts_per_roofplane": false,
+        "roof_elevation_50p": false,
+        "roof_elevation_70p": false,
+        "roof_elevation_max": false,
+        "roof_elevation_min": false,
+        "roof_pt_cnt": false,
+        "roof_type": false,
+        "slant_roofplane_cnt": false,
+        "total_roofplane_cnt": false,
+        "unsegmented_pt_cnt": false,
+        "wall_pt_cnt": false
+      },
+      "parameters": {
+        "horiz_min_count": 0.949999988079071,
+        "maximum_angle": 25.0,
+        "maximum_offset": 0.5,
+        "metrics_cluster_epsilon_ransac": 0.20000000298023224,
+        "metrics_is_horizontal_threshold": 0.9700000286102295,
+        "metrics_is_wall_threshold": 0.30000001192092896,
+        "metrics_normal_k": 15,
+        "metrics_plane_epsilon": 0.20000000298023224,
+        "metrics_plane_k": 15,
+        "metrics_plane_min_points": 20,
+        "metrics_plane_normal_threshold": 0.75,
+        "metrics_probability_ransac": 0.05000000074505806,
+        "n_refit": 50,
+        "regularize_axis_symmetry": false,
+        "regularize_coplanarity": false,
+        "regularize_orthogonality": false,
+        "regularize_parallelism": false,
+        "use_ransac": "{{plane_detect_ransac}}"
+      },
+      "position": [
+        918.0,
+        468.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "DetectPlanes"
+      ]
+    },
+    "FacesSelector-LoD12": {
+      "connections": {
+        "faces": [
+          [
+            "CityJSONFeatureWriter",
+            "geometry_lod12"
+          ],
+          [
+            "PolygonTriangulator-LoD12",
+            "polygons"
+          ],
+          [
+            "Validator-LoD12",
+            "input_geom"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "faces_A": false,
+        "faces_B": false,
+        "replace": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "faces": true
+      },
+      "position": [
+        3542.0,
+        -41.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "FacesSelector"
+      ]
+    },
+    "FacesSelector-LoD13": {
+      "connections": {
+        "faces": [
+          [
+            "CityJSONFeatureWriter",
+            "geometry_lod13"
+          ],
+          [
+            "PolygonTriangulator-LoD13",
+            "polygons"
+          ],
+          [
+            "Validator-LoD13",
+            "input_geom"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "faces_A": false,
+        "faces_B": false,
+        "replace": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "faces": true
+      },
+      "position": [
+        3540.171875,
+        426.635986328125
+      ],
+      "type": [
+        "building-reconstruction",
+        "FacesSelector"
+      ]
+    },
+    "FacesSelector-LoD22": {
+      "connections": {
+        "faces": [
+          [
+            "CityJSONFeatureWriter",
+            "geometry_lod22"
+          ],
+          [
+            "PolygonTriangulator-LoD22",
+            "polygons"
+          ],
+          [
+            "Validator-LoD22",
+            "input_geom"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "faces_A": false,
+        "faces_B": false,
+        "replace": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "faces": true
+      },
+      "position": [
+        3540.171875,
+        926.635986328125
+      ],
+      "type": [
+        "building-reconstruction",
+        "FacesSelector"
+      ]
+    },
+    "Ground_elevation": {
+      "connections": {
+        "value": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "value": false
+      },
+      "parameters": {
+        "value": "g.GROUND_ELEVATION + g.GF_PROCESS_OFFSET_Z"
+      },
+      "position": [
+        4120.0,
+        301.0
+      ],
+      "type": [
+        "Core",
+        "FloatExpr"
+      ]
+    },
+    "Ground_elevation_woffset": {
+      "connections": {
+        "value": [
+          [
+            "ArrExtrLoD12",
+            "floor_elevation"
+          ],
+          [
+            "ArrExtruder-LoD13",
+            "floor_elevation"
+          ],
+          [
+            "ArrExtruder-LoD22",
+            "floor_elevation"
+          ],
+          [
+            "LOD1Extruder-LoD11",
+            "floor_elevation"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "value": false
+      },
+      "parameters": {
+        "value": "g.GROUND_ELEVATION"
+      },
+      "position": [
+        2440.0,
+        -37.0
+      ],
+      "type": [
+        "Core",
+        "FloatExpr"
+      ]
+    },
+    "LASLoader": {
+      "connections": {
+        "points": [
+          [
+            "SplitGroundBuilding",
+            "point_cloud"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "classification": false,
+        "colors": false,
+        "intensity": false,
+        "order": false,
+        "points": false
+      },
+      "parameters": {
+        "do_filter": false,
+        "filepath": "{{INPUT_POINTCLOUD}}",
+        "filter_class": 6,
+        "thin_nth": "{{thin_nth}}",
+        "wkt": ""
+      },
+      "position": [
+        389.5,
+        213.0679931640625
+      ],
+      "type": [
+        "io-las",
+        "LASLoader"
+      ]
+    },
+    "LOD1Extruder-LoD11": {
+      "connections": {
+        "mesh": [
+          [
+            "FacesSelector-LoD12",
+            "faces_A"
+          ],
+          [
+            "FacesSelector-LoD13",
+            "faces_A"
+          ],
+          [
+            "FacesSelector-LoD22",
+            "faces_A"
+          ],
+          [
+            "PolygonTriangulator-LoD11",
+            "polygons"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "floor_elevation": true,
+        "polygon": true,
+        "roof_elevation": false
+      },
+      "marked_outputs": {
+        "3d_polygons": false,
+        "mesh": false,
+        "surface_types": false
+      },
+      "position": [
+        2365.34375,
+        -309.63592529296875
+      ],
+      "type": [
+        "building-reconstruction",
+        "LOD1Extruder"
+      ]
+    },
+    "OGRLoader": {
+      "connections": {
+        "area": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "attributes": [
+          [
+            "AttributeTester",
+            "attributes"
+          ],
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ],
+        "linear_rings": [
+          [
+            "BuildArrFromLines",
+            "footprint"
+          ],
+          [
+            "CityJSONFeatureWriter",
+            "footprints"
+          ],
+          [
+            "LOD1Extruder-LoD11",
+            "polygon"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "area": false,
+        "attributes": false,
+        "is_valid": false,
+        "line_strings": false,
+        "linear_rings": false,
+        "wkt": false
+      },
+      "parameters": {
+        "attribute_filter": "",
+        "base_elevation": "{{GROUND_ELEVATION}}",
+        "filepath": "{{INPUT_FOOTPRINT}}",
+        "layer_id": 0,
+        "layer_name": "",
+        "output_fid": false
+      },
+      "position": [
+        386.5,
+        65.0679931640625
+      ],
+      "type": [
+        "io-gdal",
+        "OGRLoader"
+      ]
+    },
+    "OptimiseArrangmentGrid": {
+      "connections": {
+        "arrangement": [
+          [
+            "ArrDissolve-LoD13",
+            "arrangement"
+          ],
+          [
+            "ArrDissolve-LoD22",
+            "arrangement"
+          ],
+          [
+            "ArrDissolveLoD12",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false,
+        "ground_pts_per_roofplane": false,
+        "heightfield": false,
+        "pts_per_roofplane": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "groundparts": false
+      },
+      "parameters": {
+        "data_multiplier": "{{optimisation_data_term}}",
+        "do_normalise": false,
+        "graph_cut_impl": 0,
+        "label_ground_outside_fp": true,
+        "n_iterations": 1,
+        "preset_labels": false,
+        "smoothness_multiplier": 1.0,
+        "use_ground": "{{clip_ground}}",
+        "z_percentile": 0.8999999761581421
+      },
+      "position": [
+        2402.5,
+        310.3999938964844
+      ],
+      "type": [
+        "building-reconstruction",
+        "OptimiseArrangmentGrid"
+      ]
+    },
+    "PC2MeshQuality-LoD11": {
+      "marked_inputs": {
+        "face_ids": false,
+        "ipoints": false,
+        "triangles": false
+      },
+      "marked_outputs": {
+        "error_hist": true,
+        "face_errors": false,
+        "m2pc_error_hist": true,
+        "m2pc_error_max": true,
+        "mesh_error": false,
+        "mesh_error_f": true,
+        "point_errors": false
+      },
+      "position": [
+        2749.0,
+        -378.864013671875
+      ],
+      "type": [
+        "building-reconstruction",
+        "PC2MeshQuality"
+      ]
+    },
+    "PC2MeshQuality-LoD12": {
+      "connections": {
+        "mesh_error_f": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "face_ids": false,
+        "ipoints": false,
+        "triangles": false
+      },
+      "marked_outputs": {
+        "error_hist": true,
+        "face_errors": false,
+        "m2pc_error_hist": true,
+        "m2pc_error_max": true,
+        "mesh_error": false,
+        "mesh_error_f": true,
+        "point_errors": false
+      },
+      "position": [
+        3911.0,
+        -16.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "PC2MeshQuality"
+      ]
+    },
+    "PC2MeshQuality-LoD13": {
+      "connections": {
+        "mesh_error_f": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "face_ids": false,
+        "ipoints": false,
+        "triangles": false
+      },
+      "marked_outputs": {
+        "error_hist": true,
+        "face_errors": false,
+        "m2pc_error_hist": true,
+        "m2pc_error_max": true,
+        "mesh_error": false,
+        "mesh_error_f": true,
+        "point_errors": false
+      },
+      "position": [
+        3915.0,
+        526.65283203125
+      ],
+      "type": [
+        "building-reconstruction",
+        "PC2MeshQuality"
+      ]
+    },
+    "PC2MeshQuality-LoD22": {
+      "connections": {
+        "mesh_error_f": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "face_ids": false,
+        "ipoints": false,
+        "triangles": false
+      },
+      "marked_outputs": {
+        "error_hist": true,
+        "face_errors": false,
+        "m2pc_error_hist": true,
+        "m2pc_error_max": true,
+        "mesh_error": false,
+        "mesh_error_f": true,
+        "point_errors": false
+      },
+      "position": [
+        3921.0,
+        1028.65283203125
+      ],
+      "type": [
+        "building-reconstruction",
+        "PC2MeshQuality"
+      ]
+    },
+    "PlaneIntersect": {
+      "connections": {
+        "lines": [
+          [
+            "RegulariseLines",
+            "ints_segments"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "plane_adj": false,
+        "pts_per_roofplane": false
+      },
+      "marked_outputs": {
+        "lines": false
+      },
+      "parameters": {
+        "min_dist_to_line": 1.0,
+        "min_length": 0.0,
+        "min_neighb_pts": 5
+      },
+      "position": [
+        1660.8511962890625,
+        405.6999816894531
+      ],
+      "type": [
+        "building-reconstruction",
+        "PlaneIntersect"
+      ]
+    },
+    "PolygonTriangulator-LoD11": {
+      "connections": {
+        "multi_triangle_collections": [
+          [
+            "PC2MeshQuality-LoD11",
+            "triangles"
+          ]
+        ],
+        "ring_ids": [
+          [
+            "PC2MeshQuality-LoD11",
+            "face_ids"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": 4,
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": false
+      },
+      "position": [
+        2759.0,
+        -497.864013671875
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "PolygonTriangulator-LoD12": {
+      "connections": {
+        "multi_triangle_collections": [
+          [
+            "PC2MeshQuality-LoD12",
+            "triangles"
+          ]
+        ],
+        "ring_ids": [
+          [
+            "PC2MeshQuality-LoD12",
+            "face_ids"
+          ]
+        ],
+        "volumes": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": "{{thres_triangulate_snap}}",
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": false
+      },
+      "position": [
+        3545.0,
+        48.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "PolygonTriangulator-LoD13": {
+      "connections": {
+        "multi_triangle_collections": [
+          [
+            "PC2MeshQuality-LoD13",
+            "triangles"
+          ]
+        ],
+        "ring_ids": [
+          [
+            "PC2MeshQuality-LoD13",
+            "face_ids"
+          ]
+        ],
+        "volumes": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": "{{thres_triangulate_snap}}",
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": false
+      },
+      "position": [
+        3543.1728515625,
+        522.4730224609375
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "PolygonTriangulator-LoD22": {
+      "connections": {
+        "multi_triangle_collections": [
+          [
+            "PC2MeshQuality-LoD22",
+            "triangles"
+          ]
+        ],
+        "ring_ids": [
+          [
+            "PC2MeshQuality-LoD22",
+            "face_ids"
+          ]
+        ],
+        "volumes": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": "{{thres_triangulate_snap}}",
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": false
+      },
+      "position": [
+        3528.1728515625,
+        1029.4730224609375
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "RegulariseLines": {
+      "connections": {
+        "exact_regularised_edges": [
+          [
+            "BuildArrFromLines",
+            "lines"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "edge_segments": false,
+        "ints_segments": false
+      },
+      "marked_outputs": {
+        "angle_cluster_id": false,
+        "dist_cluster_id": false,
+        "edges_out_": false,
+        "exact_footprint_out": false,
+        "exact_regularised_edges": false,
+        "n_angle_clusters": false,
+        "priorities": false,
+        "regularised_edges": false
+      },
+      "parameters": {
+        "angle_threshold": 0.15000000596046448,
+        "dist_threshold": "{{thres_reg_line_dist}}",
+        "extension": "{{thres_reg_line_ext}}",
+        "merge_intersection_lines": false
+      },
+      "position": [
+        2004.46533203125,
+        253.89376831054688
+      ],
+      "type": [
+        "building-reconstruction",
+        "RegulariseLines"
+      ]
+    },
+    "SegmentRasterise": {
+      "connections": {
+        "heightfield": [
+          [
+            "ArrDissolve-LoD13",
+            "heightfield"
+          ],
+          [
+            "ArrDissolve-LoD22",
+            "heightfield"
+          ],
+          [
+            "ArrDissolveLoD12",
+            "heightfield"
+          ],
+          [
+            "OptimiseArrangmentGrid",
+            "heightfield"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "alpha_rings": false,
+        "ground_triangles": false,
+        "pts_per_roofplane": false,
+        "roofplane_ids": false,
+        "triangles": false
+      },
+      "marked_outputs": {
+        "data_area": false,
+        "grid_points": false,
+        "heightfield": false,
+        "values": false
+      },
+      "parameters": {
+        "cellsize": 0.05000000074505806,
+        "fill_nodata": false,
+        "fill_nodata_window_size": 5,
+        "megapixel_limit": 600,
+        "use_ground": true
+      },
+      "position": [
+        2017.0,
+        465.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "SegmentRasterise"
+      ]
+    },
+    "SkipReplaceTester": {
+      "connections": {
+        "replace": [
+          [
+            "FacesSelector-LoD12",
+            "replace"
+          ],
+          [
+            "FacesSelector-LoD13",
+            "replace"
+          ],
+          [
+            "FacesSelector-LoD22",
+            "replace"
+          ]
+        ],
+        "skip": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ],
+          [
+            "FacesSelector-LoD12",
+            "skip"
+          ],
+          [
+            "FacesSelector-LoD13",
+            "skip"
+          ],
+          [
+            "FacesSelector-LoD22",
+            "skip"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "alpha_rings": false,
+        "roof_type": false,
+        "skip": false
+      },
+      "marked_outputs": {
+        "replace": true,
+        "roof_type": true,
+        "skip": true
+      },
+      "parameters": {
+        "attribute_name": "{{skip_attribute_name}}"
+      },
+      "position": [
+        2399.0,
+        -180.364013671875
+      ],
+      "type": [
+        "building-reconstruction",
+        "SkipReplaceTester"
+      ]
+    },
+    "SplitGroundBuilding": {
+      "connections": {
+        "A": [
+          [
+            "DetectPlanes-ground",
+            "points"
+          ]
+        ],
+        "B": [
+          [
+            "DetectPlanes",
+            "points"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "point_cloud": false
+      },
+      "marked_outputs": {
+        "A": false,
+        "B": false,
+        "C": false,
+        "D": false
+      },
+      "parameters": {
+        "class A": 2,
+        "class B": 6,
+        "class C": 0,
+        "class D": 1
+      },
+      "position": [
+        380.5,
+        332.0679931640625
+      ],
+      "type": [
+        "io-las",
+        "PointCloudClassSplit"
+      ]
+    },
+    "TriSnap-LoD12": {
+      "connections": {
+        "arrangement": [
+          [
+            "ArrExtrLoD12",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "segment_ids_og": false,
+        "segment_ids_snapped": false,
+        "triangles_og": false,
+        "triangles_snapped": false
+      },
+      "parameters": {
+        "dist_thres": "{{thres_tri_snap}}"
+      },
+      "position": [
+        2868.0,
+        30.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "TriSnap"
+      ]
+    },
+    "TriSnap-LoD13": {
+      "connections": {
+        "arrangement": [
+          [
+            "ArrExtruder-LoD13",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "segment_ids_og": false,
+        "segment_ids_snapped": false,
+        "triangles_og": false,
+        "triangles_snapped": false
+      },
+      "parameters": {
+        "dist_thres": "{{thres_tri_snap}}"
+      },
+      "position": [
+        2868.0,
+        353.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "TriSnap"
+      ]
+    },
+    "TriSnap-LoD22": {
+      "connections": {
+        "arrangement": [
+          [
+            "ArrExtruder-LoD22",
+            "arrangement"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "arrangement": false
+      },
+      "marked_outputs": {
+        "arrangement": false,
+        "segment_ids_og": false,
+        "segment_ids_snapped": false,
+        "triangles_og": false,
+        "triangles_snapped": false
+      },
+      "parameters": {
+        "dist_thres": "{{thres_tri_snap}}"
+      },
+      "position": [
+        2866.0,
+        712.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "TriSnap"
+      ]
+    },
+    "Validator-LoD12": {
+      "connections": {
+        "errors": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "input_geom": false
+      },
+      "marked_outputs": {
+        "error_faces": false,
+        "error_locations": false,
+        "errors": false
+      },
+      "parameters": {
+        "log_invalids": false,
+        "tol_planarity_d2p_": "{{thres_val3dity_d2p}}",
+        "tol_planarity_normals_": 20.0
+      },
+      "position": [
+        3909.0,
+        -94.0
+      ],
+      "type": [
+        "Val3dity",
+        "Validator"
+      ]
+    },
+    "Validator-LoD13": {
+      "connections": {
+        "errors": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "input_geom": false
+      },
+      "marked_outputs": {
+        "error_faces": false,
+        "error_locations": false,
+        "errors": true
+      },
+      "parameters": {
+        "log_invalids": false,
+        "tol_planarity_d2p_": "{{thres_val3dity_d2p}}",
+        "tol_planarity_normals_": 20.0
+      },
+      "position": [
+        3916.0,
+        451.0
+      ],
+      "type": [
+        "Val3dity",
+        "Validator"
+      ]
+    },
+    "Validator-LoD22": {
+      "connections": {
+        "errors": [
+          [
+            "CityJSONFeatureWriter",
+            "attributes"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "input_geom": false
+      },
+      "marked_outputs": {
+        "error_faces": false,
+        "error_locations": false,
+        "errors": true
+      },
+      "parameters": {
+        "log_invalids": false,
+        "tol_planarity_d2p_": "{{thres_val3dity_d2p}}",
+        "tol_planarity_normals_": 20.0
+      },
+      "position": [
+        3915.0,
+        951.0
+      ],
+      "type": [
+        "Val3dity",
+        "Validator"
+      ]
+    }
+  }
+}

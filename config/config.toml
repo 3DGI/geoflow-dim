@@ -1,0 +1,82 @@
+[input.footprint]
+path = '/data/poly/reconstruction_input.gpkg'
+id_attribute = "identificatie"
+low_lod_attribute = 'kas_warenhuis'
+year_of_construction_attribute = 'oorspronkelijkbouwjaar'
+
+[[input.pointclouds]]
+name = "DIM"
+date = 2020
+quality = 2
+force_low_lod = true
+select_only_for_date = true
+path = '/data/laz/2020_dim/80500_455000.laz /data/laz/2020_dim/80500_455500.laz /data/laz/2020_dim/81000_455000.laz /data/laz/2020_dim/81000_455500.laz'
+
+[[input.pointclouds]]
+name = "AHN3"
+quality = 1
+path = '/data/laz/ahn3/t_995178.laz /data/laz/ahn3/t_995179.laz /data/laz/ahn3/t_995180.laz /data/laz/ahn3/t_995181.laz /data/laz/ahn3/t_992518.laz /data/laz/ahn3/t_992519.laz /data/laz/ahn3/t_992520.laz /data/laz/ahn3/t_992521.laz /data/laz/ahn3/t_993848.laz /data/laz/ahn3/t_993849.laz /data/laz/ahn3/t_993850.laz /data/laz/ahn3/t_993851.laz /data/laz/ahn3/t_991188.laz /data/laz/ahn3/t_991189.laz /data/laz/ahn3/t_991190.laz /data/laz/ahn3/t_991191.laz'
+
+[parameters]
+
+[output]
+path = '/data/tmp'
+
+# {bid} will be replaced by building identifier
+# {pc_name} will be replaced by input pointcloud name
+# {path} will be replaced by path
+
+## temporary files for all buildings
+jsonl_list_file = '{path}/features.txt'
+
+
+## temporary files per building
+building_toml_file = '{path}/features/{bid}/config{pc_name}.toml'
+building_las_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.las'
+building_raster_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.tif'
+building_gpkg_file = '{path}/features/{bid}/crop/{bid}.gpkg'
+
+# output path of building features (CityJSON Features)
+building_jsonl_file = '/data/output/features/{bid}.city.jsonl'
+metadata_json_file = '/data/output/metadata.jsonl'
+index_file = '/data/output/index.gpkg'
+
+# these get passed through to the geoflow config files that are generated for each building
+[output.reconstruction_parameters]
+GF_PROCESS_CRS="EPSG:7415"
+OUTPUT_CRS="EPSG:7415"
+# GF_PROCESS_OFFSET_OVERRIDE=true
+CITYJSON_TRANSLATE_X=171800.0
+CITYJSON_TRANSLATE_Y=472700.0
+CITYJSON_TRANSLATE_Z=0.0
+CITYJSON_SCALE_X=0.001
+CITYJSON_SCALE_Y=0.001
+CITYJSON_SCALE_Z=0.001
+
+[output.reconstruction_parameters_dim]
+line_detect__epsilon=1.000000
+lod13__step_height=3.000000
+optimisation_data_term=8.000000
+plane_detect__k=15
+plane_detect__epsilon=0.300000
+plane_detect__min_points=15
+plane_detect__normal_angle=0.750000
+thres_alpha=0.250000
+thres_reg_line_dist=0.800000
+thres_reg_line_ext=3.000000
+clip_ground=true
+lod1_extrude_to_max=false
+
+[output.reconstruction_parameters_lidar]
+line_detect__epsilon=1.000000
+lod13__step_height=3.000000
+optimisation_data_term=8.000000
+plane_detect__k=15
+plane_detect__epsilon=0.300000
+plane_detect__min_points=15
+plane_detect__normal_angle=0.750000
+thres_alpha=0.250000
+thres_reg_line_dist=0.800000
+thres_reg_line_ext=3.000000
+clip_ground=true
+lod1_extrude_to_max=false

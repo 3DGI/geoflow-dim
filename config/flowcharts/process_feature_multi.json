@@ -1,0 +1,328 @@
+{
+  "globals": {
+    "GF_PROCESS_OFFSET_OVERRIDE": [
+      "",
+      "bool",
+      false
+    ],
+    "cotypes": [
+      "",
+      "str",
+      ""
+    ],
+    "path_metadata": [
+      "CityJSON features metadata file",
+      "str",
+      "/mnt/Data/LocalData/Kadaster/db3dnl_features/metadata.city.json"
+    ]
+  },
+  "nodes": {
+    "CJFeatureReader": {
+      "connections": {
+        "value": [
+          [
+            "CityJSONL2Mesh-LoD13",
+            "jsonl_features_str"
+          ],
+          [
+            "CityJSONL2Mesh-LoD12",
+            "jsonl_features_str"
+          ],
+          [
+            "CityJSONL2Mesh-LoD22",
+            "jsonl_features_str"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "value": true
+      },
+      "parameters": {
+        "filepath": "{{value}}",
+        "limit": 0,
+        "split": false
+      },
+      "position": [
+        246.0,
+        224.0
+      ],
+      "type": [
+        "Core",
+        "TextReader"
+      ]
+    },
+    "CJMetadata": {
+      "connections": {
+        "value": [
+          [
+            "CityJSONL2Mesh-LoD13",
+            "jsonl_metadata_str"
+          ],
+          [
+            "CityJSONL2Mesh-LoD12",
+            "jsonl_metadata_str"
+          ],
+          [
+            "CityJSONL2Mesh-LoD22",
+            "jsonl_metadata_str"
+          ]
+        ]
+      },
+      "marked_outputs": {
+        "value": true
+      },
+      "parameters": {
+        "filepath": "{{path_metadata}}",
+        "limit": 0,
+        "split": false
+      },
+      "position": [
+        247.0,
+        283.0
+      ],
+      "type": [
+        "Core",
+        "TextReader"
+      ]
+    },
+    "CityJSONL2Mesh-LoD12": {
+      "connections": {
+        "meshes": [
+          [
+            "PolygonTriangulator-LoD12",
+            "polygons"
+          ]
+        ],
+        "roofparts_lr": [
+          [
+            "h_calc",
+            "lod12_roofparts"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "jsonl_features_str": false,
+        "jsonl_metadata_str": false
+      },
+      "marked_outputs": {
+        "attributes": true,
+        "feature_type": false,
+        "lod0_2d": true,
+        "meshes": true,
+        "meshes_attributes": true,
+        "roofparts": true,
+        "roofparts_lr": true,
+        "roofparts_lr_attributes": true
+      },
+      "parameters": {
+        "3bag_buildings_mode": true,
+        "atribute_spec": "",
+        "bag3d_attr_per_part": false,
+        "cotypes": "",
+        "lod_filter": {},
+        "optimal_lod": false,
+        "optimal_lod_value": "1.2"
+      },
+      "position": [
+        454.0,
+        150.0
+      ],
+      "type": [
+        "CoreIO",
+        "CityJSONL2Mesh"
+      ]
+    },
+    "CityJSONL2Mesh-LoD13": {
+      "connections": {
+        "meshes": [
+          [
+            "PolygonTriangulator-LoD13",
+            "polygons"
+          ]
+        ],
+        "roofparts_lr": [
+          [
+            "h_calc",
+            "lod13_roofparts"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "jsonl_features_str": false,
+        "jsonl_metadata_str": false
+      },
+      "marked_outputs": {
+        "attributes": true,
+        "feature_type": false,
+        "lod0_2d": false,
+        "meshes": true,
+        "meshes_attributes": true,
+        "roofparts": true,
+        "roofparts_lr": true,
+        "roofparts_lr_attributes": true
+      },
+      "parameters": {
+        "3bag_buildings_mode": true,
+        "atribute_spec": "",
+        "bag3d_attr_per_part": true,
+        "cotypes": "",
+        "lod_filter": {},
+        "optimal_lod": false,
+        "optimal_lod_value": "1.3"
+      },
+      "position": [
+        451.0,
+        314.0
+      ],
+      "type": [
+        "CoreIO",
+        "CityJSONL2Mesh"
+      ]
+    },
+    "CityJSONL2Mesh-LoD22": {
+      "connections": {
+        "meshes": [
+          [
+            "PolygonTriangulator-LoD22",
+            "polygons"
+          ]
+        ],
+        "roofparts_lr": [
+          [
+            "h_calc",
+            "lod22_roofparts"
+          ]
+        ]
+      },
+      "marked_inputs": {
+        "jsonl_features_str": false,
+        "jsonl_metadata_str": false
+      },
+      "marked_outputs": {
+        "attributes": true,
+        "feature_type": false,
+        "lod0_2d": false,
+        "meshes": true,
+        "meshes_attributes": true,
+        "roofparts": true,
+        "roofparts_lr": true,
+        "roofparts_lr_attributes": true
+      },
+      "parameters": {
+        "3bag_buildings_mode": true,
+        "atribute_spec": "",
+        "bag3d_attr_per_part": true,
+        "cotypes": "",
+        "lod_filter": {},
+        "optimal_lod": false,
+        "optimal_lod_value": "2.2"
+      },
+      "position": [
+        456.0,
+        475.0
+      ],
+      "type": [
+        "CoreIO",
+        "CityJSONL2Mesh"
+      ]
+    },
+    "PolygonTriangulator-LoD12": {
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": true
+      },
+      "parameters": {
+        "dupe_threshold_exp": 6,
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": true
+      },
+      "position": [
+        1111.0,
+        147.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "PolygonTriangulator-LoD13": {
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": 6,
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": true
+      },
+      "position": [
+        1107.0,
+        295.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "PolygonTriangulator-LoD22": {
+      "marked_inputs": {
+        "polygons": false
+      },
+      "marked_outputs": {
+        "multi_triangle_collections": true,
+        "normals": false,
+        "ring_ids": false,
+        "triangles": false,
+        "volumes": false
+      },
+      "parameters": {
+        "dupe_threshold_exp": 6,
+        "output_all_triangles": false,
+        "output_mtc_for_every_input": true
+      },
+      "position": [
+        1124.0,
+        411.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "PolygonTriangulator"
+      ]
+    },
+    "h_calc": {
+      "marked_inputs": {
+        "lod12_roofparts": false,
+        "lod13_roofparts": false,
+        "lod22_roofparts": false
+      },
+      "marked_outputs": {
+        "lod12_hattr": true,
+        "lod13_hattr": true,
+        "lod22_hattr": true
+      },
+      "parameters": {
+        "cellsize": 0.5
+      },
+      "position": [
+        976.0,
+        22.0
+      ],
+      "type": [
+        "building-reconstruction",
+        "RoofPartition3DBAGRasterise"
+      ]
+    }
+  }
+}
