@@ -613,8 +613,8 @@
           "OGRLoader.eindregistratie": "eindregistratie",
           "OGRLoader.geconstateerd": "geconstateerd",
           "OGRLoader.identificatie": "identificatie",
-          "OGRLoader.is_mutated_DIM_AHN4": "b3_mutatie_dim_ahn4",
           "OGRLoader.is_mutated_DIM_AHN3": "b3_mutatie_dim_ahn3",
+          "OGRLoader.is_mutated_DIM_AHN4": "b3_mutatie_dim_ahn4",
           "OGRLoader.kas_warenhuis": "b3_kas_warenhuis",
           "OGRLoader.nodata_frac_AHN3": "b3_nodata_fractie_ahn3",
           "OGRLoader.nodata_frac_AHN4": "b3_nodata_fractie_ahn4",
@@ -763,16 +763,16 @@
           [
             "CityJSONFeatureWriter",
             "attributes"
+          ],
+          [
+            "LOD1Extruder-LoD11",
+            "roof_elevation"
           ]
         ],
         "roof_elevation_max": [
           [
             "CityJSONFeatureWriter",
             "attributes"
-          ],
-          [
-            "LOD1Extruder-LoD11",
-            "roof_elevation"
           ]
         ],
         "roof_elevation_min": [
