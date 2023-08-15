@@ -8,14 +8,19 @@ year_of_construction_attribute = 'oorspronkelijkbouwjaar'
 name = "DIM"
 date = 2020
 quality = 2
-force_low_lod = true
-select_only_for_date = true
+force_low_lod = false
+select_only_for_date = false
 path = '/data/laz/2020_dim/80500_455000.laz /data/laz/2020_dim/80500_455500.laz /data/laz/2020_dim/81000_455000.laz /data/laz/2020_dim/81000_455500.laz'
 
 [[input.pointclouds]]
 name = "AHN3"
 quality = 1
 path = '/data/laz/ahn3/t_995178.laz /data/laz/ahn3/t_995179.laz /data/laz/ahn3/t_995180.laz /data/laz/ahn3/t_995181.laz /data/laz/ahn3/t_992518.laz /data/laz/ahn3/t_992519.laz /data/laz/ahn3/t_992520.laz /data/laz/ahn3/t_992521.laz /data/laz/ahn3/t_993848.laz /data/laz/ahn3/t_993849.laz /data/laz/ahn3/t_993850.laz /data/laz/ahn3/t_993851.laz /data/laz/ahn3/t_991188.laz /data/laz/ahn3/t_991189.laz /data/laz/ahn3/t_991190.laz /data/laz/ahn3/t_991191.laz'
+
+[[input.pointclouds]]
+name = "AHN4"
+quality = 0
+path = '/data/laz/ahn4/t_995178.laz /data/laz/ahn4/t_995179.laz /data/laz/ahn4/t_995180.laz /data/laz/ahn4/t_995181.laz /data/laz/ahn4/t_992518.laz /data/laz/ahn4/t_992519.laz /data/laz/ahn4/t_992520.laz /data/laz/ahn4/t_992521.laz /data/laz/ahn4/t_993848.laz /data/laz/ahn4/t_993849.laz /data/laz/ahn4/t_993850.laz /data/laz/ahn4/t_993851.laz /data/laz/ahn4/t_991188.laz /data/laz/ahn4/t_991189.laz /data/laz/ahn4/t_991190.laz /data/laz/ahn4/t_991191.laz'
 
 [parameters]
 
