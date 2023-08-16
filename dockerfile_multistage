@@ -108,18 +108,18 @@ RUN cd /tmp && \
     cmake --install .
     # rm -rf /tmp/*
 RUN mkdir /tmp/export && \
+    mkdir -p /tmp/export/usr/local/share && \
     bash /tmp/strip-docker-image-export \
     -v \
     -d /tmp/export \
     -f /usr/local/bin/crop
 
 FROM base as pyenv
+SHELL ["/bin/bash", "-c"]
 ARG JOBS
 RUN mkdir /dim_pipeline && cd /dim_pipeline && \
-    python3 -m venv roofenv    
-
-SHELL ["/bin/bash", "-c"]
-RUN pip install numpy && \
+    python3 -m venv roofenv && \
+    pip install numpy && \
     source /dim_pipeline/roofenv/bin/activate && \
     pip3 install shapely rtree wheel click fiona numpy && \ 
     pip3 install --no-cache-dir --force-reinstall 'GDAL[numpy]'
@@ -131,14 +131,14 @@ RUN apt-get install -y unzip && \
     unzip 4.8.0.zip && \
     cd opencv-4.8.0/ && \
     mkdir build && cd build/ && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/dim_pipeline/roofenv -DPYTHON3_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.11/site-packages/numpy/core/include
-RUN cd /tmp/opencv-4.8.0/build && cmake --build . --parallel $JOBS --config Release
-RUN cd /tmp/opencv-4.8.0/build && cmake --install .
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/dim_pipeline/roofenv -DPYTHON3_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.11/site-packages/numpy/core/include && \
+    cd /tmp/opencv-4.8.0/build && cmake --build . --parallel $JOBS --config Release && \
+    cd /tmp/opencv-4.8.0/build && cmake --install .
 
 RUN cd /tmp && \
     wget https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.gz && \
-    tar -zxf boost_1_82_0.tar.gz
-RUN cd /tmp/boost_1_82_0 && \
+    tar -zxf boost_1_82_0.tar.gz && \
+    cd /tmp/boost_1_82_0 && \
     ./bootstrap.sh --with-libraries=python,filesystem --with-python=/usr/local/bin/python --prefix=/dim_pipeline/roofenv && \
     ./b2 install
 
@@ -154,17 +154,18 @@ RUN cd /tmp && \
 
 FROM python:3.11-slim-bookworm as dim-pipeline-runner
 WORKDIR /
+COPY --from=base /usr/local/share/gdal/ /usr/local/share/gdal
+COPY --from=base /usr/local/share/proj /usr/local/share/proj
 COPY --from=build-geoflow /tmp/export/usr/ /usr
 COPY --from=build-geoflow /tmp/export/lib/ /lib
 COPY --from=build-crop /tmp/export/usr/ /usr
 COPY --from=pyenv /dim_pipeline/ /dim_pipeline
-CMD ["bash"]
+COPY ./resources/ /dim_pipeline/resources
+COPY ./run.py /dim_pipeline/
+
 ENV LD_LIBRARY_PATH=/usr/local/lib/;/lib/x86_64-linux-gnu/
-# WORKDIR /opt
-# USER 1000
+WORKDIR /data
 
-# ENTRYPOINT ["/opt/roofenv/bin/python3", "/data/config/run.py"]
+# ENTRYPOINT ["/dim_pipeline/roofenv/bin/python", "/dim_pipeline/run.py"]
 # CMD ["--help"]
-
-# docker build -t gf-ubuntu-base -f base-ubuntu.dockerfile .
-# docker run -it gf-ubuntu-base 
+CMD ["bash"]

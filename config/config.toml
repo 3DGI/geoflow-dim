@@ -50,7 +50,6 @@ index_file = '/data/output/index.gpkg'
 [output.reconstruction_parameters]
 GF_PROCESS_CRS="EPSG:7415"
 OUTPUT_CRS="EPSG:7415"
-# GF_PROCESS_OFFSET_OVERRIDE=true
 CITYJSON_TRANSLATE_X=171800.0
 CITYJSON_TRANSLATE_Y=472700.0
 CITYJSON_TRANSLATE_Z=0.0
@@ -70,7 +69,6 @@ thres_alpha=0.250000
 thres_reg_line_dist=0.800000
 thres_reg_line_ext=3.000000
 clip_ground=true
-lod1_extrude_to_max=false
 
 [output.reconstruction_parameters_lidar]
 line_detect__epsilon=1.000000
@@ -84,4 +82,3 @@ thres_alpha=0.250000
 thres_reg_line_dist=0.800000
 thres_reg_line_ext=3.000000
 clip_ground=true
-lod1_extrude_to_max=false

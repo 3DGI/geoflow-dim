@@ -23,13 +23,13 @@ except:
     pass
 
 CJSONL_PATH = "/data/output/features"
-METADATA_NL_PATH = "/data/config/metadata_nl.jsonl"
+METADATA_NL_PATH = "/dim_pipeline/resources/metadata_nl.jsonl"
 ROOFLINES_OUTPUT_TMPL = "/data/tmp/features/{bid}/crop/rooflines"
 BUILDING_CFG_TMPL = "/data/tmp/features/{bid}/config.toml"
 
-GF_FLOWCHART_LIDAR = "/data/config/flowcharts/reconstruct_bag.json"
-GF_FLOWCHART_DIM = "/data/config/flowcharts/reconstruct_bag_ortho.json"
-GF_FLOWCHART_MERGE_FEATURES = "/data/config/flowcharts/createMulti.json"
+GF_FLOWCHART_LIDAR = "/dim_pipeline/resources/flowcharts/reconstruct_bag.json"
+GF_FLOWCHART_DIM = "/dim_pipeline/resources/flowcharts/reconstruct_bag_ortho.json"
+GF_FLOWCHART_MERGE_FEATURES = "/dim_pipeline/resources/flowcharts/createMulti.json"
 
 BLD_ID = "identificatie"
 
@@ -226,7 +226,7 @@ def run_ortho_rooflines(building_index_file, max_workers, verbose=False):
     for b_id, b_poly in building_polys.building_polygon_dict.items():
         n_edges = extract_rooflines(args, b_id, b_poly, i_building, n_building_files, ortho_image_list, building_polys, file_name_list)
         i_building += 1
-        logging.info(f"Extracted rooflines for bid='{b_id}' n_edges={n_edges}")
+        logging.debug(f"Extracted rooflines for bid='{b_id}' n_edges={n_edges}")
    
     # NB this does not work, code is not thread safe
     # with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -296,15 +296,17 @@ def run_tile_merge(output_city_json_path):
     args.append(f"--output_file={output_city_json_path}")
     # if verbose:
     #     args += ["--verbose"]
-    return subprocess.run(args)
+    result = subprocess.run(args)
+    if result.returncode != 0:
+        logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
 
 
 @click.command()
-@click.option('-c', '--config', default="/data/config/config.toml", type=click.Path(exists=True), help='Main configuration file')
+@click.option('-c', '--config', type=click.Path(exists=True), help='Main configuration file')
 @click.option('-l', '--loglevel', type=click.Choice(['INFO', 'WARNING', 'DEBUG'], case_sensitive=False), help='Print debug information')
 @click.option('-j', '--jobs', default=None, type=int, help='Number of parallel jobs to use. Default is all cores.')
 @click.option('--keep-tmp-data', is_flag=True, default=False, help='Do not remove temporary files (could be helpful for debugging)')
-@click.option('--output-tile', type=click.Path(), default="/data/output/tile", show_default=True, help='Export CityJSON file that contains all buildings')
+@click.option('--output-tile', type=click.Path(), default="/data/output/tile", show_default=True, help='Export output tile file stem (CityJSON, GPKG formats). NB. does not include file extension.')
 def execute(config, loglevel, jobs, keep_tmp_data, output_tile):
     config_data = read_toml_config(config)
     indexfile = config_data['output']['index_file']
@@ -330,11 +332,11 @@ def execute(config, loglevel, jobs, keep_tmp_data, output_tile):
     logging.info(f"Config read from {config}")
 
     logging.info("Pointcloud selection and cropping...")
-    run_crop(config, loglvl <= logging.INFO)
+    run_crop(config, loglvl <= logging.DEBUG)
     
     if not skip_ortholines:
         logging.info("Roofline extraction from true orthophotos...")
-        run_ortho_rooflines(building_index_path, jobs, loglvl <= logging.INFO)
+        run_ortho_rooflines(building_index_path, jobs, loglvl <= logging.DEBUG)
 
     logging.info("Building reconstruction...")
     run_reconstruct(building_index_path, jobs, skip_ortholines, config_data, loglvl <= logging.DEBUG)
