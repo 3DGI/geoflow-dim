@@ -1,5 +1,25 @@
 {
   "globals": {
+    "GF_PROCESS_OFFSET_OVERRIDE":[
+      "",
+      "bool",
+      true
+    ],
+    "GF_PROCESS_OFFSET_X":[
+      "",
+      "float",
+      171800
+    ],
+    "GF_PROCESS_OFFSET_Y":[
+      "",
+      "float",
+      
+    ],
+    "GF_PROCESS_OFFSET_Z":[
+      "",
+      "float",
+      0
+    ],
     "GF_PROCESS_CRS": [
       "",
       "str",
