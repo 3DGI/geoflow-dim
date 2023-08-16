@@ -153,7 +153,6 @@ RUN cd /tmp && \
     cp libkinetic_partition* /dim_pipeline/roofenv/lib64/python3.11/site-packages/
 
 FROM python:3.11-slim-bookworm as dim-pipeline-runner
-WORKDIR /
 COPY --from=base /usr/local/share/gdal/ /usr/local/share/gdal
 COPY --from=base /usr/local/share/proj /usr/local/share/proj
 COPY --from=build-geoflow /tmp/export/usr/ /usr
@@ -165,7 +164,6 @@ COPY ./run.py /dim_pipeline/
 
 ENV LD_LIBRARY_PATH=/usr/local/lib/;/lib/x86_64-linux-gnu/
 WORKDIR /data
-
-# ENTRYPOINT ["/dim_pipeline/roofenv/bin/python", "/dim_pipeline/run.py"]
-# CMD ["--help"]
-CMD ["bash"]
+ENTRYPOINT ["/dim_pipeline/roofenv/bin/python", "/dim_pipeline/run.py"]
+CMD ["--help"]
+# CMD ["bash"]

@@ -9,7 +9,7 @@ name = "DIM"
 date = 2020
 quality = 2
 force_low_lod = false
-select_only_for_date = false
+select_only_for_date = true
 path = '/data/laz/2020_dim/80500_455000.laz /data/laz/2020_dim/80500_455500.laz /data/laz/2020_dim/81000_455000.laz /data/laz/2020_dim/81000_455500.laz'
 
 [[input.pointclouds]]
