@@ -50,7 +50,7 @@ Options:
                                   extension.  [default: /data/output/tile]
   --help                          Show this message and exit.
 ```
-
+## Run with example data
 ```
 docker run -it \
   -v ./config:/config \
@@ -61,7 +61,15 @@ docker run -it \
   -v ./example_data/10_268_594/laz/ahn4:/data/laz/ahn4 \
   -v ./tmp:/data/tmp \
   -v ./ouput:/data/output \
-  dim_pipeline_runner -c /config/config.toml -l INFO --keep-tmp-data
+  dim_pipeline_runner -c /config/config.toml -l INFO
+```
+Example output:
+```
+2023-08-16 12:11:12,695 [INFO]: Config read from /config/config.toml
+2023-08-16 12:11:12,696 [INFO]: Pointcloud selection and cropping...
+2023-08-16 12:12:20,713 [INFO]: Roofline extraction from true orthophotos...
+2023-08-16 12:12:20,757 [INFO]: Building reconstruction...
+2023-08-16 12:12:32,620 [INFO]: Generating CityJSON file...
 ```
 
 # Issues
