@@ -2,7 +2,7 @@ FROM python:3.11-slim-bookworm as base
 ARG VERSION
 LABEL org.opencontainers.image.authors="Ravi Peters <ravi.peters@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
-LABEL org.opencontainers.image.title="dim-pipeline"
+LABEL org.opencontainers.image.title="geoflow-dim"
 LABEL org.opencontainers.image.description="Custom image made for Kadaster to perform buildings reconstruction based on geoflow with rooflines extracted from true-ortho photos"
 LABEL org.opencontainers.image.version=$VERSION
 LABEL org.opencontainers.image.licenses="MIT"
@@ -152,7 +152,7 @@ RUN cd /tmp && \
     cmake --build . --parallel $JOBS --config Release && \
     cp libkinetic_partition* /dim_pipeline/roofenv/lib64/python3.11/site-packages/
 
-FROM python:3.11-slim-bookworm as dim-pipeline-runner
+FROM python:3.11-slim-bookworm as geoflow-dim-runner
 COPY --from=base /usr/local/share/gdal/ /usr/local/share/gdal
 COPY --from=base /usr/local/share/proj /usr/local/share/proj
 COPY --from=build-geoflow /tmp/export/usr/ /usr
