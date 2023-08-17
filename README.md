@@ -79,7 +79,7 @@ docker run --rm \
   -v ./ouput:/data/output \
   geoflow-dim -c /config/config.toml -l INFO
 ```
-Hiermee worden met `-v` verschillende lokale mappen in de docker container gemount. Vervoldens worden met `-c ...` het configuratie bestand opgegeven en met `-l INFO` het log niveau ingesteld. Voorbeeld output:
+Hiermee worden met `-v` verschillende lokale mappen in de docker container gemount. Vervolgens wordt met `-c ...` het configuratie bestand opgegeven en met `-l INFO` het log niveau ingesteld. Voorbeeld output:
 ```
 2023-08-17 19:52:17,495 [INFO]: Config read from /config/config.toml
 2023-08-17 19:52:17,495 [INFO]: Pointcloud selection and cropping...
