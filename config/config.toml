@@ -1,9 +1,29 @@
+# Input 2D gebouw polygonen (bv BAG)
+#   path:                           pad (in docker image) naar het 2D vector bestand
+#   id_attribute:                   naam van attribuut met gebouw identifier
+#   low_lod_attribute:              naam van boolean attribuut waarmee aagegeven wordt of een gebouw alleen 
+#                                   in LoD1 blokvorm gereconstrueerd dient te worden. Als de waarde 'true' is 
+#                                   voor een gebouw dan wordt voor dit gebouw alleen een simpele LoD1 blokvorm gereconstrueerd.
+#                                   Dit is aan te raden voor zeer grote gebouwen zoals Kassen en warenhuizen, die anders het 
+#                                   reconstructie proces erg vertragen
+#   year_of_construction_attribute: naam van attribuut waarin het bouwjaar van het gebouw staat als integer waarde.
 [input.footprint]
 path = '/data/poly/reconstruction_input.gpkg'
 id_attribute = "identificatie"
 low_lod_attribute = 'kas_warenhuis'
 year_of_construction_attribute = 'oorspronkelijkbouwjaar'
 
+# Input puntenwolken
+#   name:                   Naam van de puntenwolk. Dit dient exact 'DIM' te zijn voor een densematching puntenwolk.
+#   date:                   Inwinjaar van de puntenwolk. Dit hoeft alleen gespecificeerd te worden als de LAS/LAZ bestanden 
+#                           zelf geen GPS timestamps hebben of het 'File Creation Year' niet klopt met het acquisitie jaar.
+#   quality:                Integer waarde waarmee een voorkeurs volgorde wordt aangegeven voor de input puntenwolken. 
+#                           Een lagere waarde betekent een hogere voorkeur. Puntenwolken met een hogere voorkeur hebben 
+#                           een grotere kans om geselecteerd te worden
+#   force_low_lod:          zet op 'true' als voor de gebouwen waar deze puntenwolk voor wordt geselecteerd alleen een simpele 
+#                           LoD1 blokvorm gereconstrueerd dient te worden.
+#   select_only_for_date:   zet op 'true' als deze puntenwokl alleen op basis van de acquisitie datum geselecteerd moet worden (aanbevolen voor DIM).
+#   path:                   Lijst met LAS/LAZ bestanden
 [[input.pointclouds]]
 name = "DIM"
 date = 2020
@@ -22,9 +42,7 @@ name = "AHN4"
 quality = 0
 path = '/data/laz/ahn4/t_995178.laz /data/laz/ahn4/t_995179.laz /data/laz/ahn4/t_995180.laz /data/laz/ahn4/t_995181.laz /data/laz/ahn4/t_992518.laz /data/laz/ahn4/t_992519.laz /data/laz/ahn4/t_992520.laz /data/laz/ahn4/t_992521.laz /data/laz/ahn4/t_993848.laz /data/laz/ahn4/t_993849.laz /data/laz/ahn4/t_993850.laz /data/laz/ahn4/t_993851.laz /data/laz/ahn4/t_991188.laz /data/laz/ahn4/t_991189.laz /data/laz/ahn4/t_991190.laz /data/laz/ahn4/t_991191.laz'
 
-[parameters]
-
-# these get passed through to the geoflow config files that are generated for each building
+# Algemene gebouw reconstructie parameters
 [output.reconstruction_parameters]
 GF_PROCESS_CRS="EPSG:7415"
 OUTPUT_CRS="EPSG:7415"
@@ -47,13 +65,14 @@ thres_reg_line_dist=0.800000
 thres_reg_line_ext=3.000000
 clip_ground=true
 
-# override parameters for DIM based reconstruction
+# Specifieke parameters voor DIM gebouw reconstructie
 [output.reconstruction_parameters_dim]
+optimisation_data_term=6.000000
 
-# override parameters for Lidar based reconstruction
+# Specifieke parameters voor LiDAR gebouw reconstructie
 [output.reconstruction_parameters_lidar]
 
-## DO NOT change anything below this line, as it might break things
+# Bestandsbenaming voor tijdelijke bestanden en output bestanden
 [output]
 path = '/data/tmp'
 

@@ -1,5 +1,5 @@
 # Introductie Geoflow-DIM
-Deze pijplijn doet Geoflow LoD1.2-2.2 3D gebouw reconstructie uit zowel lidar puntewolken als Dense Matching puntenwolken aangevuld met true-ortho beelden voor daklijn extractie. Voor ieder gebouw wordt automatisch bepaald welke puntenwolk het meest geschikt is op basis van puntdekking en/of acquisitie datum.
+Deze pijplijn verricht Geoflow LoD1.2-2.2 3D gebouw reconstructie uit zowel lidar puntewolken als Dense Matching puntenwolken aangevuld met true-ortho beelden voor daklijn extractie. Voor ieder gebouw wordt automatisch bepaald welke puntenwolk het meest geschikt is op basis van puntdekking en/of acquisitie datum.
 
 ## Inputs en outputs
 Voor de gebouw reconstructie zijn nodig:
@@ -29,16 +29,17 @@ Voor het draaien van zeer grote gebieden is het aanbevolen de data van te voren 
 # Gebruik
 Deze pijplijn is beschikbaar is momenteel alleen beschikbaar als Docker image. Directe installatie op een systeem (zonder Docker) is in principe wel mogelijk maar erg ingewikkeld en wordt daarom afgeraden. Docker kan gegbruikt worden op alle besturingssystemen.
 
-Om de docker image te downloaden en te importeren:
+Download de docker image op de Release pagina en laad in met:
 ```
-docker import url ...
-```
-
-Testen of de docker image juist geimporteerd is:
-```
-docker run dim_pipeline_runner --help
+docker load < geoflow-dim_v0.1.tar.gz
 ```
 
+Test of de docker image juist is ingeladen met:
+```
+docker run --rm geoflow-dim
+```
+
+Dit zou de volgende output moeten geven:
 ```
 Usage: run.py [OPTIONS]
 
@@ -57,9 +58,17 @@ Options:
 ```
 
 ## Test met voorbeeld data
-
+Clone dit git repository:
 ```
-docker run -it \
+git clone https://github.com/3DGI/geoflow-dim.git
+cd geoflow-dim
+```
+
+Download de [testadata](https://data.3dgi.xyz/geoflow-dim/10_268_594.zip) en pak uit in de `example_data` map.
+
+Draai de pijplijn met:
+```
+docker run --rm \
   -v ./config:/config \
   -v ./example_data/10_268_594/bag:/data/poly \
   -v ./example_data/10_268_594/true-ortho:/data/img \
@@ -68,27 +77,17 @@ docker run -it \
   -v ./example_data/10_268_594/laz/ahn4:/data/laz/ahn4 \
   -v ./tmp:/data/tmp \
   -v ./ouput:/data/output \
-  dim_pipeline_runner -c /config/config.toml -l INFO
+  geoflow-dim -c /config/config.toml -l INFO
 ```
-
-Example output:
+Hiermee worden met `-v` verschillende lokale mappen in de docker container gemount. Vervoldens worden met `-c ...` het configuratie bestand opgegeven en met `-l INFO` het log niveau ingesteld. Voorbeeld output:
 ```
-2023-08-16 12:11:12,695 [INFO]: Config read from /config/config.toml
-2023-08-16 12:11:12,696 [INFO]: Pointcloud selection and cropping...
-2023-08-16 12:12:20,713 [INFO]: Roofline extraction from true orthophotos...
-2023-08-16 12:12:20,757 [INFO]: Building reconstruction...
-2023-08-16 12:12:32,620 [INFO]: Generating CityJSON file...
+2023-08-17 19:52:17,495 [INFO]: Config read from /config/config.toml
+2023-08-17 19:52:17,495 [INFO]: Pointcloud selection and cropping...
+2023-08-17 19:52:50,713 [INFO]: Roofline extraction from true orthophotos...
+2023-08-17 19:52:50,742 [INFO]: Building reconstruction...
+2023-08-17 19:52:57,225 [INFO]: Generating CityJSON file...
+2023-08-17 19:53:24,089 [INFO]: Cleaning up temporary files...
 ```
 
 ## Gebruik met eigen data
-## config file
-Needs to have config toml file.
-
-explain input pointclouds
-Specify parameters
-Specify data paths
-
-## volumes
-
-
-# Issues
+Hiervoor dienen de juiste lokale mappen in de docker container gemount te worden als een volume (met `-v`) en het configuratie bestand moet aangepast worden om daarin de juiste input bestanden te noemen (input gebouw polygonen en puntenwolken).
