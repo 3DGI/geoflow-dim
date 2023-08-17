@@ -24,28 +24,6 @@ path = '/data/laz/ahn4/t_995178.laz /data/laz/ahn4/t_995179.laz /data/laz/ahn4/t
 
 [parameters]
 
-[output]
-path = '/data/tmp'
-
-# {bid} will be replaced by building identifier
-# {pc_name} will be replaced by input pointcloud name
-# {path} will be replaced by path
-
-## temporary files for all buildings
-jsonl_list_file = '{path}/features.txt'
-
-
-## temporary files per building
-building_toml_file = '{path}/features/{bid}/config{pc_name}.toml'
-building_las_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.las'
-building_raster_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.tif'
-building_gpkg_file = '{path}/features/{bid}/crop/{bid}.gpkg'
-
-# output path of building features (CityJSON Features)
-building_jsonl_file = '/data/output/features/{bid}.city.jsonl'
-metadata_json_file = '/data/output/metadata.jsonl'
-index_file = '/data/output/index.gpkg'
-
 # these get passed through to the geoflow config files that are generated for each building
 [output.reconstruction_parameters]
 GF_PROCESS_CRS="EPSG:7415"
@@ -57,7 +35,6 @@ CITYJSON_SCALE_X=0.001
 CITYJSON_SCALE_Y=0.001
 CITYJSON_SCALE_Z=0.001
 
-[output.reconstruction_parameters_dim]
 line_detect__epsilon=1.000000
 lod13__step_height=3.000000
 optimisation_data_term=8.000000
@@ -70,15 +47,30 @@ thres_reg_line_dist=0.800000
 thres_reg_line_ext=3.000000
 clip_ground=true
 
+# override parameters for DIM based reconstruction
+[output.reconstruction_parameters_dim]
+
+# override parameters for Lidar based reconstruction
 [output.reconstruction_parameters_lidar]
-line_detect__epsilon=1.000000
-lod13__step_height=3.000000
-optimisation_data_term=8.000000
-plane_detect__k=15
-plane_detect__epsilon=0.300000
-plane_detect__min_points=15
-plane_detect__normal_angle=0.750000
-thres_alpha=0.250000
-thres_reg_line_dist=0.800000
-thres_reg_line_ext=3.000000
-clip_ground=true
+
+## DO NOT change anything below this line, as it might break things
+[output]
+path = '/data/tmp'
+
+# {bid} will be replaced by building identifier
+# {pc_name} will be replaced by input pointcloud name
+# {path} will be replaced by path
+
+## temporary files for all buildings
+jsonl_list_file = '{path}/features.txt'
+
+## temporary files per building
+building_toml_file = '{path}/features/{bid}/config{pc_name}.toml'
+building_las_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.las'
+building_raster_file = '{path}/features/{bid}/crop/{bid}_{pc_name}.tif'
+building_gpkg_file = '{path}/features/{bid}/crop/{bid}.gpkg'
+
+# output path of building features (CityJSON Features)
+building_jsonl_file = '/data/output/features/{bid}.city.jsonl'
+metadata_json_file = '/data/output/metadata.jsonl'
+index_file = '/data/output/index.gpkg'
