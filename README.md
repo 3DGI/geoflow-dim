@@ -88,6 +88,12 @@ Hiermee worden met `-v` verschillende lokale mappen in de docker container gemou
 2023-08-17 19:52:57,225 [INFO]: Generating CityJSON file...
 2023-08-17 19:53:24,089 [INFO]: Cleaning up temporary files...
 ```
+Daarnaast zou er nu een `output` map moeten zijn verschenen met daarin de gereconstrueerde gebouwen in verschillende bestands formaten:
+```
+features <- Map met CityJSON features
+tile.city.json <- CityJSON bestand met alle gebouwen
+tile.gpkg <- GIS vector bestand met alle gebouwen
+```
 
 ## Gebruik met eigen data
 Hiervoor dienen de juiste lokale mappen in de docker container gemount te worden als een volume (met `-v`) en het configuratie bestand moet aangepast worden om daarin de juiste input bestanden te noemen (input gebouw polygonen en puntenwolken).
