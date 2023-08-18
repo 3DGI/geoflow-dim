@@ -301,13 +301,25 @@ def run_tile_merge(output_city_json_path):
         logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
 
 
-@click.command()
+@click.group(invoke_without_command=True)
+@click.pass_context
 @click.option('-c', '--config', type=click.Path(exists=True), help='Main configuration file')
 @click.option('-l', '--loglevel', type=click.Choice(['INFO', 'WARNING', 'DEBUG'], case_sensitive=False), help='Print debug information')
 @click.option('-j', '--jobs', default=None, type=int, help='Number of parallel jobs to use. Default is all cores.')
 @click.option('--keep-tmp-data', is_flag=True, default=False, help='Do not remove temporary files (could be helpful for debugging)')
+@click.option('--only-reconstruct', is_flag=True, default=False, help='Only perform the building reconstruction and tile generation steps (needs tmp data from previous run)')
 @click.option('--output-tile', type=click.Path(), default="/data/output/tile", show_default=True, help='Export output tile file stem (CityJSON, GPKG formats). NB. does not include file extension.')
-def execute(config, loglevel, jobs, keep_tmp_data, output_tile):
+def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct, output_tile):
+    loglvl = logging.WARNING
+    if loglevel == 'INFO':
+        loglvl = logging.INFO
+    elif loglevel == 'WARNING':
+        loglvl = logging.WARNING
+    elif loglevel == 'DEBUG':
+        loglvl = logging.DEBUG
+    logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', level=loglvl)
+    if ctx.invoked_subcommand: return
+
     config_data = read_toml_config(config)
     indexfile = config_data['output']['index_file']
     path = config_data['output']['path']
@@ -320,23 +332,15 @@ def execute(config, loglevel, jobs, keep_tmp_data, output_tile):
                 skip_ortholines = pc['force_low_lod']
     # output_city_json_path = "/data/output/tile.city.json"
 
-    loglvl = logging.WARNING
-    if loglevel == 'INFO':
-        loglvl = logging.INFO
-    elif loglevel == 'WARNING':
-        loglvl = logging.WARNING
-    elif loglevel == 'DEBUG':
-        loglvl = logging.DEBUG
-    logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s', level=loglvl)
-
     logging.info(f"Config read from {config}")
 
-    logging.info("Pointcloud selection and cropping...")
-    run_crop(config, loglvl <= logging.DEBUG)
-    
-    if not skip_ortholines:
-        logging.info("Roofline extraction from true orthophotos...")
-        run_ortho_rooflines(building_index_path, jobs, loglvl <= logging.DEBUG)
+    if not only_reconstruct:
+        logging.info("Pointcloud selection and cropping...")
+        run_crop(config, loglvl <= logging.DEBUG)
+        
+        if not skip_ortholines:
+            logging.info("Roofline extraction from true orthophotos...")
+            run_ortho_rooflines(building_index_path, jobs, loglvl <= logging.DEBUG)
 
     logging.info("Building reconstruction...")
     run_reconstruct(building_index_path, jobs, skip_ortholines, config_data, loglvl <= logging.DEBUG)
@@ -354,5 +358,15 @@ def execute(config, loglevel, jobs, keep_tmp_data, output_tile):
             elif os.path.isdir(item_path):
                 shutil.rmtree(item_path)
 
+@cli.command(help="Run a command (for debugging)")
+@click.argument("commandline")
+# @click.option("--commandline")
+def cmd(commandline):
+    args = commandline.split()
+    logging.info(f"Running: {commandline}")
+    result = subprocess.run(args)
+    if result.returncode != 0:
+        logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
+
 if __name__ == '__main__':
-    execute()
+    cli()

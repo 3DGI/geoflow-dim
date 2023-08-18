@@ -135,7 +135,47 @@
       "float",
       0.75
     ],
-    "plane_detect_ransac": [
+    "plane_detect__ransac_cluster_epsilon": [
+      "",
+      "float",
+      0.30000001192092896
+    ],
+    "plane_detect__ransac_probability": [
+      "",
+      "float",
+      0.05000000074505806
+    ],
+    "plane_detect__use_ransac": [
+      "",
+      "bool",
+      false
+    ],
+    "plane_reg__angle": [
+      "",
+      "float",
+      10.0
+    ],
+    "plane_reg__offset": [
+      "",
+      "float",
+      0.4000000059604645
+    ],
+    "plane_reg__parallelism":[
+      "",
+      "bool",
+      false
+    ],
+    "plane_reg__orthogonality":[
+      "",
+      "bool",
+      false
+    ],
+    "plane_reg__coplanarity":[
+      "",
+      "bool",
+      false
+    ],
+    "plane_reg__axis_symmetry":[
       "",
       "bool",
       false
@@ -833,9 +873,9 @@
       },
       "parameters": {
         "horiz_min_count": 0.949999988079071,
-        "maximum_angle": 25.0,
-        "maximum_offset": 0.5,
-        "metrics_cluster_epsilon_ransac": 0.20000000298023224,
+        "maximum_angle": "{{plane_reg__angle}}",
+        "maximum_offset": "{{plane_reg__offset}}",
+        "metrics_cluster_epsilon_ransac": "{{plane_detect__ransac_cluster_epsilon}}",
         "metrics_is_horizontal_threshold": 0.9700000286102295,
         "metrics_is_wall_threshold": 0.30000001192092896,
         "metrics_normal_k": "{{normal_estimate__k}}",
@@ -843,13 +883,13 @@
         "metrics_plane_k": "{{plane_detect__k}}",
         "metrics_plane_min_points": "{{plane_detect__min_points}}",
         "metrics_plane_normal_threshold": "{{plane_detect__normal_angle}}",
-        "metrics_probability_ransac": 0.05000000074505806,
+        "metrics_probability_ransac": "{{plane_detect__ransac_probability}}",
         "n_refit": 5,
-        "regularize_axis_symmetry": false,
-        "regularize_coplanarity": false,
-        "regularize_orthogonality": false,
-        "regularize_parallelism": false,
-        "use_ransac": "{{plane_detect_ransac}}"
+        "regularize_axis_symmetry": "{{plane_reg__axis_symmetry}}",
+        "regularize_coplanarity": "{{plane_reg__coplanarity}}",
+        "regularize_orthogonality": "{{plane_reg__orthogonality}}",
+        "regularize_parallelism": "{{plane_reg__parallelism}}",
+        "use_ransac": "{{plane_detect__use_ransac}}"
       },
       "position": [
         902.0,
@@ -912,7 +952,7 @@
         "regularize_coplanarity": false,
         "regularize_orthogonality": false,
         "regularize_parallelism": false,
-        "use_ransac": "{{plane_detect_ransac}}"
+        "use_ransac": "{{plane_detect__use_ransac}}"
       },
       "position": [
         918.0,

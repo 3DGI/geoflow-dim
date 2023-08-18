@@ -14,10 +14,11 @@ low_lod_attribute = 'kas_warenhuis'
 year_of_construction_attribute = 'oorspronkelijkbouwjaar'
 
 # Input puntenwolken
-#   name:                   Naam van de puntenwolk. Dit dient exact 'DIM' te zijn voor een densematching puntenwolk.
+# Voor iedere input puntenwolk (bv AHN3, AHN4, DIM) zijn er de volgende argumenten:
+#   name:                   Naam van de puntenwolk. Dit dient exact 'DIM' te zijn voor een densematching puntenwolk, anders wordt aangenomen dat het een lidar puntenwolk is.
 #   date:                   Inwinjaar van de puntenwolk. Dit hoeft alleen gespecificeerd te worden als de LAS/LAZ bestanden 
 #                           zelf geen GPS timestamps hebben of het 'File Creation Year' niet klopt met het acquisitie jaar.
-#   quality:                Integer waarde waarmee een voorkeurs volgorde wordt aangegeven voor de input puntenwolken. 
+#   quality:                Integer waarde waarmee een voorkeursvolgorde wordt aangegeven voor de input puntenwolken. 
 #                           Een lagere waarde betekent een hogere voorkeur. Puntenwolken met een hogere voorkeur hebben 
 #                           een grotere kans om geselecteerd te worden
 #   force_low_lod:          zet op 'true' als voor de gebouwen waar deze puntenwolk voor wordt geselecteerd alleen een simpele 
@@ -53,23 +54,37 @@ CITYJSON_SCALE_X=0.001
 CITYJSON_SCALE_Y=0.001
 CITYJSON_SCALE_Z=0.001
 
-line_detect__epsilon=1.000000
-lod13__step_height=3.000000
-optimisation_data_term=8.000000
+line_detect__epsilon=1.0
+lod13__step_height=3.0
+optimisation_data_term=8.0
 plane_detect__k=15
-plane_detect__epsilon=0.300000
+plane_detect__epsilon=0.3
 plane_detect__min_points=15
-plane_detect__normal_angle=0.750000
-thres_alpha=0.250000
-thres_reg_line_dist=0.800000
-thres_reg_line_ext=3.000000
+plane_detect__normal_angle=0.75
+thres_alpha=0.25
+thres_reg_line_dist=0.8
+thres_reg_line_ext=3.0
 clip_ground=true
 
-# Specifieke parameters voor DIM gebouw reconstructie
-[output.reconstruction_parameters_dim]
-optimisation_data_term=6.000000
+# RANSAC plane detection (not recommended, disabled by default)
+plane_detect__use_ransac=false
+plane_detect__ransac_cluster_epsilon = 0.3
+plane_detect__ransac_probability = 0.05
 
-# Specifieke parameters voor LiDAR gebouw reconstructie
+# plane regularisation (disabled by default)
+# for more explanation of parameters see: https://doc.cgal.org/latest/Shape_regularization/group__PkgShapeRegularizationRefPlanes.html#ga9ace5aafd056ce9ccb348c96e38d361a
+plane_reg__angle=10.0
+plane_reg__offset=0.4
+plane_reg__parallelism=false
+plane_reg__orthogonality=false
+plane_reg__coplanarity=false
+plane_reg__axis_symmetry=false
+
+# Specifieke parameters voor DIM gebouw reconstructie (kopieer parameters uit de algemene sectie hiernaartoe)
+[output.reconstruction_parameters_dim]
+optimisation_data_term=6.0
+
+# Specifieke parameters voor LiDAR gebouw reconstructie (kopieer paremeters uit de algemene sectie hiernaartoe)
 [output.reconstruction_parameters_lidar]
 
 # Bestandsbenaming voor tijdelijke bestanden en output bestanden

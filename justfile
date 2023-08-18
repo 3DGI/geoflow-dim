@@ -1,5 +1,5 @@
 build:
-  DOCKER_BUILDKIT=1 sudo docker build -t geoflow-dim -f dockerfile_multistage --target geoflow-dim-runner --squash --build-arg JOBS=32 .
+  DOCKER_BUILDKIT=1 docker build -t geoflow-dim -f dockerfile_multistage --target geoflow-dim-runner --squash --build-arg JOBS=32 .
 
 # rebuild:
 #   sudo docker build --no-cache -t dim_reconstructor .
@@ -8,10 +8,10 @@ save:
   sudo docker save geoflow-dim:latest | gzip > geoflow-dim_$(git describe).tar.gz
 
 load:
-  docker load < geoflow-dim_01.tar.gz
+  docker load < geoflow-dim.tar.gz
 
-run-it *ARGS:
-  sudo docker run --rm \
+run *ARGS:
+  docker run \
   -v ./config:/config \
   -v ./example_data/10_268_594/bag:/data/poly \
   -v ./example_data/10_268_594/true-ortho:/data/img \
