@@ -29,7 +29,7 @@ Voor het draaien van zeer grote gebieden is het aanbevolen de data van te voren 
 # Gebruik
 Deze pijplijn is beschikbaar is momenteel alleen beschikbaar als Docker image. Directe installatie op een systeem (zonder Docker) is in principe wel mogelijk maar erg ingewikkeld en wordt daarom afgeraden. Docker kan gegbruikt worden op alle besturingssystemen.
 
-Download de docker image op de Release pagina en laad in met:
+Download de docker image op de [Release pagina](https://github.com/3DGI/geoflow-dim/releases/download/v0.1/) (bv: `geoflow-dim_v0.1.tar.gz`) en laad in met:
 ```
 docker load < geoflow-dim_v0.1.tar.gz
 ```
@@ -79,7 +79,7 @@ docker run --rm \
   -v ./ouput:/data/output \
   geoflow-dim -c /config/config.toml -l INFO
 ```
-Hiermee worden met `-v` verschillende lokale mappen in de docker container gemount. Vervoldens worden met `-c ...` het configuratie bestand opgegeven en met `-l INFO` het log niveau ingesteld. Voorbeeld output:
+Hiermee worden met `-v` verschillende lokale mappen in de docker container gemount. Vervolgens wordt met `-c ...` het configuratie bestand opgegeven en met `-l INFO` het log niveau ingesteld. Voorbeeld output:
 ```
 2023-08-17 19:52:17,495 [INFO]: Config read from /config/config.toml
 2023-08-17 19:52:17,495 [INFO]: Pointcloud selection and cropping...
@@ -88,6 +88,12 @@ Hiermee worden met `-v` verschillende lokale mappen in de docker container gemou
 2023-08-17 19:52:57,225 [INFO]: Generating CityJSON file...
 2023-08-17 19:53:24,089 [INFO]: Cleaning up temporary files...
 ```
+Daarnaast zou er nu een `output` map moeten zijn verschenen met daarin de gereconstrueerde gebouwen in verschillende bestands formaten:
+```
+features <- Map met CityJSON features
+tile.city.json <- CityJSON bestand met alle gebouwen
+tile.gpkg <- GIS vector bestand met alle gebouwen
+```
 
 ## Gebruik met eigen data
-Hiervoor dienen de juiste lokale mappen in de docker container gemount te worden als een volume (met `-v`) en het configuratie bestand moet aangepast worden om daarin de juiste input bestanden te noemen (input gebouw polygonen en puntenwolken).
+Hiervoor dienen de juiste lokale mappen in de docker container gemount te worden als een volume (met `-v`) en het configuratie bestand moet aangepast worden om daarin de juiste input bestanden te noemen (input gebouw polygonen en puntenwolken). `config/config.toml` is een voorbeeld configuratie bestand met uitleg.
