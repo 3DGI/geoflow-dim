@@ -27,7 +27,7 @@ De pijplijn is opgebouwd uit de volgende stappen:
 Voor het draaien van zeer grote gebieden is het aanbevolen de data van te voren in tegels op te splitsen en deze pijplijn per tegel te draaien.
 
 # Gebruik
-Deze pijplijn is beschikbaar is momenteel alleen beschikbaar als Docker image. Directe installatie op een systeem (zonder Docker) is in principe wel mogelijk maar erg ingewikkeld en wordt daarom afgeraden. Docker kan gegbruikt worden op alle besturingssystemen.
+Deze pijplijn is beschikbaar is momenteel alleen beschikbaar als Docker image. Directe installatie op een systeem (zonder Docker) is in principe wel mogelijk maar erg ingewikkeld en wordt daarom afgeraden. Docker kan gebruikt worden op alle besturingssystemen.
 
 Download de docker image op de [Release pagina](https://github.com/3DGI/geoflow-dim/releases/tag/v0.1) (bv: `geoflow-dim_v0.1.tar.gz`) en laad in met:
 ```
