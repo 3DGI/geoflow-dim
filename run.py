@@ -3,9 +3,10 @@ import subprocess
 import fiona
 import class_definition as cd
 import os.path
+from pathlib import Path
 import glob
 import copy
-import sys
+import sys, os
 import tomllib
 import logging
 import shutil
@@ -15,8 +16,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # sys.path.append("./kinetic_partition/build")
 import libkinetic_partition
 
-ORTHO_IMG_DIR = "/data/img/"
-TMP_IMG_DIR = "/data/tmp/rgb/"
+ORTHO_IMG_DIR = "/azblob/bm/img/"
+TMP_IMG_DIR = "/tmp/rgb/"
 try:
     os.mkdir(TMP_IMG_DIR)
 except:
@@ -24,8 +25,10 @@ except:
 
 CJSONL_PATH = "/data/output/features"
 METADATA_NL_PATH = "/dim_pipeline/resources/metadata_nl.jsonl"
-ROOFLINES_OUTPUT_TMPL = "/data/tmp/features/{bid}/crop/rooflines"
-BUILDING_CFG_TMPL = "/data/tmp/features/{bid}/config.toml"
+ROOFLINES_OUTPUT_TMPL = "/tmp/features/{bid}/crop/rooflines"
+BUILDING_CFG_TMPL = "/tmp/features/{bid}/config.toml"
+
+DB_OUTPUT_STRING =  os.environ.get("PG_OUTPUT").replace('"', "")
 
 GF_FLOWCHART_LIDAR = "/dim_pipeline/resources/flowcharts/reconstruct_bag.json"
 GF_FLOWCHART_DIM = "/dim_pipeline/resources/flowcharts/reconstruct_bag_ortho.json"
@@ -35,6 +38,7 @@ BLD_ID = "identificatie"
 
 EXE_CROP = "/usr/local/bin/crop"
 EXE_GEOF = "/usr/local/bin/geof"
+EXE_AZCOPY = "/usr/local/bin/azcopy"
 
 def read_toml_config(config_path):
     with open(config_path, "rb") as f:
@@ -212,8 +216,8 @@ def run_ortho_rooflines(building_index_file, max_workers, verbose=False):
     args.verbose = verbose
 
     # scan dir with ortho images
-    ortho_images_in = glob.glob(ORTHO_IMG_DIR + "*.tif")
-    ortho_image_list, file_name_list = read_ortho_photos(ortho_images_in, ORTHO_IMG_DIR, args)
+    # ortho_images_in = glob.glob(ORTHO_IMG_DIR + "*.tif")
+    # ortho_image_list, file_name_list = read_ortho_photos(ortho_images_in, ORTHO_IMG_DIR, args)
 
     # read building footprints
     building_polys = cd.WPolygons()
@@ -288,18 +292,51 @@ def run_reconstruct(building_index_file, max_workers, skip_ortholines, config_da
                 logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
 
 # 5 merge cjdb?
-def run_tile_merge(output_city_json_path):
-    # cmd = f"(cat {METADATA_NL_PATH} ; echo ; find {CJSONL_PATH} -name '*.city.jsonl' -exec cat {{}} \;  -exec echo \;) | cjio stdin save {output_city_json_path}"
+def run_tile_merge(path):
+    # cmd = f"(cat {METADATA_NL_PATH} ; echo ; find {CJSONL_PATH} -name '*.city.jsonl' -exec cat {{}} \;  -exec echo \;) | cjio stdin save {path}"
     args = ["geof", GF_FLOWCHART_MERGE_FEATURES] 
-    args.append(f"--path_features_input_file=/data/tmp/features.txt") 
+    args.append(f"--path_features_input_file={path}/features.txt") 
     args.append(f"--path_metadata={METADATA_NL_PATH}") 
-    args.append(f"--output_file={output_city_json_path}")
+    args.append(f"--output_file={path}/tile")
+    args.append(f"--output_ogr={DB_OUTPUT_STRING}")
     # if verbose:
     #     args += ["--verbose"]
+    logging.info(" ".join(args))
     result = subprocess.run(args)
     if result.returncode != 0:
         logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
 
+class azcopyResource:
+
+    def __init__(self, sas_key, container, endpoint):
+        self.sas_key = str(sas_key).replace('"',"")
+        self.container = container
+        self.endpoint = endpoint
+
+    def get_container_url(self, az_path=""):
+        return f"{self.endpoint}/{self.container}/{az_path}?{self.sas_key}"
+
+    def transfer(self, source, destination):
+        shell_command = f"azcopy copy --recursive '{source}' '{destination}'"
+        return_code = 0
+        logging.info(f"Executing: {shell_command}")
+        for i in range(0, 5):
+            try: 
+                proc = subprocess.run(shell_command, check=True, shell=True, text=True, capture_output=True)
+                logging.info(proc.stdout)
+                logging.info(proc.stderr)
+                break
+            except subprocess.CalledProcessError as e:
+                logging.error(e)
+                logging.info(f"azcopy upload failed, retrying ({i+1}/5)")
+    
+    def upload(self, src, az_path):
+        dest = self.get_container_url(az_path)
+        self.transfer(src, dest)
+
+    def download(self, az_path, dest):
+        src = self.get_container_url(az_path)
+        self.transfer(src, dest)
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -308,8 +345,7 @@ def run_tile_merge(output_city_json_path):
 @click.option('-j', '--jobs', default=None, type=int, help='Number of parallel jobs to use. Default is all cores.')
 @click.option('--keep-tmp-data', is_flag=True, default=False, help='Do not remove temporary files (could be helpful for debugging)')
 @click.option('--only-reconstruct', is_flag=True, default=False, help='Only perform the building reconstruction and tile generation steps (needs tmp data from previous run)')
-@click.option('--output-tile', type=click.Path(), default="/data/output/tile", show_default=True, help='Export output tile file stem (CityJSON, GPKG formats). NB. does not include file extension.')
-def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct, output_tile):
+def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
     loglvl = logging.WARNING
     if loglevel == 'INFO':
         loglvl = logging.INFO
@@ -334,6 +370,50 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct, output_til
 
     logging.info(f"Config read from {config}")
 
+    # check if azure blobs are specified, and download files
+    if  os.environ.get("AZBLOB_GFDATA_SAS_KEY") and \
+        os.environ.get("AZBLOB_GFDATA_CONTAINER") and \
+        os.environ.get("AZBLOB_GFDATA_ENDPOINT"):
+        azb = azcopyResource(
+            sas_key=os.environ.get("AZBLOB_GFDATA_SAS_KEY"),
+            container=os.environ.get("AZBLOB_GFDATA_CONTAINER"),
+            endpoint=os.environ.get("AZBLOB_GFDATA_ENDPOINT")
+        )
+        logging.info("Downloading pointclouds from Azure BLOB storage...")
+        for pc in config_data['input']['pointclouds']:
+            for filepath_ in pc['path'].split(" "):
+                if '/azblob/gfdata' in str(filepath_):
+                    filepath = Path(filepath_)
+                    filepath.parent.mkdir(parents=True, exist_ok=True)
+                    azb.download(
+                        az_path=filepath.relative_to('/azblob/gfdata'),
+                        dest=filepath)
+    if  os.environ.get("AZBLOB_BM_SAS_KEY") and \
+        os.environ.get("AZBLOB_BM_CONTAINER") and \
+        os.environ.get("AZBLOB_BM_ENDPOINT"):
+        azb = azcopyResource(
+            sas_key=os.environ.get("AZBLOB_BM_SAS_KEY"),
+            container=os.environ.get("AZBLOB_BM_CONTAINER"),
+            endpoint=os.environ.get("AZBLOB_BM_ENDPOINT")
+        )
+        logging.info("Downloading DIM data from Azure BLOB storage...")
+        for pc in config_data['input']['pointclouds']:
+            for filepath_ in pc['path'].split(" "):
+                if ('/azblob/bm' in str(filepath_)):
+                    filepath = Path(filepath_)
+                    filepath.parent.mkdir(parents=True, exist_ok=True)
+                    azb.download(
+                        az_path=filepath.relative_to('/azblob/bm'),
+                        dest=filepath)
+            if pc['name'] == 'DIM':
+                for filepath_ in pc['path_trueortho'].split(" "):
+                    if ('/azblob/bm' in str(filepath_)):
+                        filepath = Path(filepath_)
+                        tfw_fp = filepath.with_suffix('.tfw')
+                        azb.download(
+                            az_path=tfw_fp.relative_to('/azblob/bm'),
+                            dest=Path(ORTHO_IMG_DIR) / tfw_fp.name)
+    
     if not only_reconstruct:
         logging.info("Pointcloud selection and cropping...")
         run_crop(config, loglvl <= logging.DEBUG)
@@ -345,9 +425,27 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct, output_til
     logging.info("Building reconstruction...")
     run_reconstruct(building_index_path, jobs, skip_ortholines, config_data, loglvl <= logging.DEBUG)
 
-    if output_tile:
-        logging.info("Generating CityJSON file...")
-        run_tile_merge(output_tile)
+    logging.info("Generating CityJSON file...")
+    run_tile_merge(path)
+
+    if  os.environ.get("AZBLOB_GFOUTPUT_SAS_KEY") and \
+        os.environ.get("AZBLOB_GFOUTPUT_CONTAINER") and \
+        os.environ.get("AZBLOB_GFOUTPUT_ENDPOINT"):
+        azb = azcopyResource(
+            sas_key=os.environ.get("AZBLOB_GFOUTPUT_SAS_KEY"),
+            container=os.environ.get("AZBLOB_GFOUTPUT_CONTAINER"),
+            endpoint=os.environ.get("AZBLOB_GFOUTPUT_ENDPOINT")
+        )
+        logging.info("Uploading outputs to Azure BLOB storage...")
+        p = Path(path)
+        azb.upload(
+            src=p,
+            az_path=''
+        )
+        azb.upload(
+            src=METADATA_NL_PATH,
+            az_path=p.relative_to("/data/output")
+        )
 
     if not keep_tmp_data:
         logging.info("Cleaning up temporary files...")

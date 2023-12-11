@@ -1,7 +1,7 @@
 build:
-  DOCKER_BUILDKIT=1 docker build -t geoflow-dim -f dockerfile_multistage --target geoflow-dim-runner --squash --build-arg JOBS=32 .
+  DOCKER_BUILDKIT=1 sudo docker build -t geoflow-dim -f dockerfile_multistage --target geoflow-dim-runner --squash --build-arg JOBS=32 .
 
-# rebuild:
+# rebuild:``
 #   sudo docker build --no-cache -t dim_reconstructor .
 
 save:
@@ -10,14 +10,14 @@ save:
 load:
   docker load < geoflow-dim.tar.gz
 
+mount-azblob:
+  blobfuse2 mount /azblob/gfdata -o allow_root --config-file=/home/ravi/git/3dbag-input-kadaster/blobfuse/bfuse_ahn.yml
+  # blobfuse2 mount /azblob/bm -o allow_root --config-file=/home/ravi/git/3dbag-input-kadaster/blobfuse/bfuse_sure2021.yml
+
 run *ARGS:
-  docker run \
-  -v ./config:/config \
-  -v ./example_data/10_268_594/bag:/data/poly \
-  -v ./example_data/10_268_594/true-ortho:/data/img \
-  -v ./example_data/10_268_594/laz/2020_dim:/data/laz/2020_dim \
-  -v ./example_data/10_268_594/laz/ahn3:/data/laz/ahn3 \
-  -v ./example_data/10_268_594/laz/ahn4:/data/laz/ahn4 \
-  -v ./tmp:/data/tmp \
-  -v ./ouput:/data/output \
+  sudo docker run \
+  --env-file .env \
+  -v /data:/data \
   geoflow-dim {{ARGS}}
+  # -v ./tmp:/data/tmp \
+  # -v ./ouput:/data/output \

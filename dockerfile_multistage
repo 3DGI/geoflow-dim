@@ -59,7 +59,7 @@ RUN cd /tmp && \
     cmake --install . && \
     rm -rf /tmp/*
 
-ARG GDAL_VERSION=3.7.1
+ARG GDAL_VERSION=3.8.1
 RUN cd /tmp && \
     wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz && \
     tar -zxvf gdal-${GDAL_VERSION}.tar.gz && \
@@ -152,6 +152,14 @@ RUN cd /tmp && \
     cmake --build . --parallel $JOBS --config Release && \
     cp libkinetic_partition* /dim_pipeline/roofenv/lib64/python3.11/site-packages/
 
+# install azcopy
+RUN cd /tmp && \
+    wget -O azcopy_v10.tar.gz https://aka.ms/downloadazcopy-v10-linux && tar -xf azcopy_v10.tar.gz --strip-components=1 && \
+    mv azcopy /usr/local/bin/ && \
+    rm azcopy_v10.tar.gz NOTICE.txt
+
+RUN apt-get update && apt-get -y install
+
 FROM python:3.11-slim-bookworm as geoflow-dim-runner
 COPY --from=base /usr/local/share/gdal/ /usr/local/share/gdal
 COPY --from=base /usr/local/share/proj /usr/local/share/proj
@@ -159,6 +167,7 @@ COPY --from=build-geoflow /tmp/export/usr/ /usr
 COPY --from=build-geoflow /tmp/export/lib/ /lib
 COPY --from=build-crop /tmp/export/usr/ /usr
 COPY --from=pyenv /dim_pipeline/ /dim_pipeline
+COPY --from=pyenv /usr/local/bin/azcopy /usr/local/bin/azcopy
 COPY ./resources/ /dim_pipeline/resources
 COPY ./run.py /dim_pipeline/
 
