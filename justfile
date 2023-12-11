@@ -5,7 +5,7 @@ build:
 #   sudo docker build --no-cache -t dim_reconstructor .
 
 save:
-  sudo docker save geoflow-dim:latest | gzip > geoflow-dim_$(git describe).tar.gz
+  docker save geoflow-dim:latest | gzip > geoflow-dim_$(git describe).tar.gz
 
 load:
   docker load < geoflow-dim.tar.gz

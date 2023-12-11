@@ -1,29 +1,29 @@
 {
   "globals": {
-    "GF_PROCESS_OFFSET_OVERRIDE":[
-      "",
-      "bool",
-      true
-    ],
-    "GF_PROCESS_OFFSET_X":[
-      "",
-      "float",
-      171800
-    ],
-    "GF_PROCESS_OFFSET_Y":[
-      "",
-      "float",
-      0
-    ],
-    "GF_PROCESS_OFFSET_Z":[
-      "",
-      "float",
-      0
-    ],
     "GF_PROCESS_CRS": [
       "",
       "str",
       "EPSG:7415"
+    ],
+    "GF_PROCESS_OFFSET_OVERRIDE": [
+      "",
+      "bool",
+      true
+    ],
+    "GF_PROCESS_OFFSET_X": [
+      "",
+      "float",
+      171800.0
+    ],
+    "GF_PROCESS_OFFSET_Y": [
+      "",
+      "float",
+      0.0
+    ],
+    "GF_PROCESS_OFFSET_Z": [
+      "",
+      "float",
+      0.0
     ],
     "OUTPUT_CRS": [
       "",
@@ -35,15 +35,20 @@
       "str",
       ""
     ],
+    "output_ogr": [
+      "",
+      "str",
+      ""
+    ],
     "output_overwrite_layers": [
       "",
       "bool",
-      true
+      false
     ],
     "output_transactions": [
       "",
       "bool",
-      false
+      true
     ],
     "path_features_input_file": [
       "text file with on each line an input CityJSON feature path",
@@ -141,10 +146,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod12_2d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -177,10 +182,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod13_2d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -213,10 +218,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod22_2d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -249,10 +254,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod12_3d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -280,10 +285,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod13_3d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -311,10 +316,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "lod22_3d",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
@@ -342,10 +347,10 @@
       },
       "parameters": {
         "CRS": "{{OUTPUT_CRS}}",
-        "create_directories": true,
+        "create_directories": false,
         "do_transactions": "{{output_transactions}}",
-        "filepath": "{{output_file}}.gpkg",
-        "gdaldriver": "GPKG",
+        "filepath": "{{output_ogr}}",
+        "gdaldriver": "PostgreSQL",
         "layername": "pand",
         "only_output_mapped_attrs": true,
         "output_attribute_names": {
