@@ -292,15 +292,15 @@ def run_reconstruct(building_index_file, max_workers, skip_ortholines, config_da
                 logging.warning("Error occurred while executing command '{}'".format(" ".join(result.args)))
 
 # 5 merge cjdb?
-def run_tile_merge(path):
+def run_tile_merge(path, verbose):
     # cmd = f"(cat {METADATA_NL_PATH} ; echo ; find {CJSONL_PATH} -name '*.city.jsonl' -exec cat {{}} \;  -exec echo \;) | cjio stdin save {path}"
     args = ["geof", GF_FLOWCHART_MERGE_FEATURES] 
     args.append(f"--path_features_input_file={path}/features.txt") 
     args.append(f"--path_metadata={METADATA_NL_PATH}") 
     args.append(f"--output_file={path}/tile")
     args.append(f"--output_ogr={DB_OUTPUT_STRING}")
-    # if verbose:
-    #     args += ["--verbose"]
+    if verbose:
+        args += ["--verbose"]
     logging.info(" ".join(args))
     result = subprocess.run(args)
     if result.returncode != 0:
@@ -426,7 +426,7 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
     run_reconstruct(building_index_path, jobs, skip_ortholines, config_data, loglvl <= logging.DEBUG)
 
     logging.info("Generating CityJSON file...")
-    run_tile_merge(path)
+    run_tile_merge(path, loglvl <= logging.DEBUG)
 
     if  os.environ.get("AZBLOB_GFOUTPUT_SAS_KEY") and \
         os.environ.get("AZBLOB_GFOUTPUT_CONTAINER") and \
@@ -444,7 +444,7 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
         )
         azb.upload(
             src=METADATA_NL_PATH,
-            az_path=p.relative_to("/data/output")
+            az_path=p.relative_to("/data/output") / "features_metadata.city.json"
         )
 
     if not keep_tmp_data:
