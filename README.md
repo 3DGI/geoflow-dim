@@ -61,7 +61,7 @@ Commands:
 ```
 
 ## Gebruik met [3dbag-input-kadaster](https://github.com/3DGI/3dbag-input-kadaster)
-**Let op gebruik minimaal 3dbag-input-kadaster versie 0.3**
+**Let op gebruik minimaal 3dbag-input-kadaster versie 0.4**
 
 De [3dbag-input-kadaster](https://github.com/3DGI/3dbag-input-kadaster) pijplijn prepareert de input data automatisch en splitst deze op in tegels. Voor iedere tegel (van 1.25x1.25 km) wordt een configuratie bestand weggeschreven naar een Azure BLOB container. Deze configuratie bestanden kunnen direct gebruikt worden om de `geoflow-dim` docker image te draaien. Ieder configuratie bestand zal 1 tegel aan gebouwen genereren. 
 
