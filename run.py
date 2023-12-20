@@ -361,11 +361,13 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
     path = config_data['output']['path']
     building_index_path = indexfile.format(path=path)
 
-    skip_ortholines = True
+    skip_ortholines = False
     for pc in config_data['input']['pointclouds']:
         if "DIM" == pc["name"]:
             if 'force_low_lod' in pc:
                 skip_ortholines = pc['force_low_lod']
+            else:
+                skip_ortholines = False
             skip_ortholines = (not "path_trueortho" in pc) or skip_ortholines
     # output_city_json_path = "/data/output/tile.city.json"
 
