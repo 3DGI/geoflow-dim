@@ -5,7 +5,7 @@ build:
 #   sudo docker build --no-cache -t dim_reconstructor .
 
 save:
-  docker save geoflow-dim:latest | gzip > geoflow-dim_$(git describe).tar.gz
+  sudo docker save geoflow-dim:latest | gzip > geoflow-dim_$(git describe).tar.gz
 
 load:
   docker load < geoflow-dim.tar.gz
@@ -16,7 +16,7 @@ mount-azblob:
 
 run *ARGS:
   sudo docker run \
-  --env-file .env \
+  --env-file develop.env \
   -v /data:/data \
   geoflow-dim {{ARGS}}
   # -v ./tmp:/data/tmp \
