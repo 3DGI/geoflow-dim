@@ -29,7 +29,7 @@ Voor het draaien van zeer grote gebieden is het aanbevolen de data van te voren 
 # Gebruik
 Deze pijplijn is beschikbaar is momenteel alleen beschikbaar als Docker image. Directe installatie op een systeem (zonder Docker) is in principe wel mogelijk maar erg ingewikkeld en wordt daarom afgeraden. Docker kan gebruikt worden op alle besturingssystemen.
 
-Download de docker image op de [Release pagina](https://github.com/3DGI/geoflow-dim/releases/tag/v0.3) (bv: `geoflow-dim_v0.2.tar.gz`) en laad in met:
+Download de docker image op de [Release pagina](https://github.com/3DGI/geoflow-dim/releases/tag/v0.3) (bv: `geoflow-dim_v0.3.tar.gz`) en laad in met:
 ```
 docker load < geoflow-dim_v0.3.tar.gz
 ```
