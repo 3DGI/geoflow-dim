@@ -383,13 +383,16 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
             endpoint=os.environ.get("AZBLOB_GFDATA_ENDPOINT")
         )
         logging.info("Downloading pointclouds from Azure BLOB storage...")
+        remote_path = Path("")
+        if os.environ.get("AZBLOB_GFDATA_PATH"):
+            remote_path = Path(str(os.environ.get("AZBLOB_GFDATA_PATH")).replace('"', ""))
         for pc in config_data['input']['pointclouds']:
             for filepath_ in pc['path'].split(" "):
                 if '/azblob/gfdata' in str(filepath_):
                     filepath = Path(filepath_)
                     filepath.parent.mkdir(parents=True, exist_ok=True)
                     azb.download(
-                        az_path=filepath.relative_to('/azblob/gfdata'),
+                        az_path=remote_path / filepath.relative_to('/azblob/gfdata'),
                         dest=filepath)
     if  os.environ.get("AZBLOB_BM_SAS_KEY") and \
         os.environ.get("AZBLOB_BM_CONTAINER") and \
@@ -441,13 +444,16 @@ def cli(ctx, config, loglevel, jobs, keep_tmp_data, only_reconstruct):
         )
         logging.info("Uploading outputs to Azure BLOB storage...")
         p = Path(path)
+        remote_path = Path("")
+        if os.environ.get("AZBLOB_GFOUTPUT_PATH"):
+            remote_path = Path(str(os.environ.get("AZBLOB_GFOUTPUT_PATH")).replace('"', ""))
         azb.upload(
             src=p,
-            az_path=''
+            az_path=remote_path
         )
         azb.upload(
             src=METADATA_NL_PATH,
-            az_path=p.relative_to("/data/output") / "features_metadata.city.json"
+            az_path=remote_path / p.relative_to("/data/output") / "features_metadata.city.json"
         )
 
     if not keep_tmp_data:
