@@ -59,7 +59,7 @@ RUN cd /tmp && \
     cmake --install . && \
     rm -rf /tmp/*
 
-ARG GDAL_VERSION=3.8.1
+ARG GDAL_VERSION=3.9.1
 RUN cd /tmp && \
     wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz && \
     tar -zxvf gdal-${GDAL_VERSION}.tar.gz && \
@@ -119,19 +119,19 @@ SHELL ["/bin/bash", "-c"]
 ARG JOBS
 RUN mkdir /dim_pipeline && cd /dim_pipeline && \
     python3 -m venv roofenv && \
-    pip install numpy && \
+    pip3 install numpy==1.26.4 && \
     source /dim_pipeline/roofenv/bin/activate && \
-    pip3 install shapely rtree wheel click fiona numpy && \ 
-    pip3 install --no-cache-dir --force-reinstall 'GDAL[numpy]'
+    pip3 install shapely rtree wheel click fiona numpy==1.26.4 && \ 
+    pip3 install --no-cache-dir --force-reinstall 'numpy==1.26.4' 'GDAL[numpy]'
 
-# # install opencv
+# install opencv
 RUN apt-get install -y unzip && \
     cd /tmp && \
     wget https://github.com/opencv/opencv/archive/4.8.0.zip && \
     unzip 4.8.0.zip && \
     cd opencv-4.8.0/ && \
     mkdir build && cd build/ && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/dim_pipeline/roofenv -DPYTHON3_NUMPY_INCLUDE_DIRS=/usr/local/lib/python3.11/site-packages/numpy/core/include && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/dim_pipeline/roofenv -DPYTHON3_NUMPY_INCLUDE_DIRS=/dim_pipeline/roofenv/lib/python3.11/site-packages/numpy/core/include && \
     cd /tmp/opencv-4.8.0/build && cmake --build . --parallel $JOBS --config Release && \
     cd /tmp/opencv-4.8.0/build && cmake --install .
 
