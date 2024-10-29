@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bookworm as base
+FROM python:3.11-slim-bookworm AS base
 ARG VERSION
 LABEL org.opencontainers.image.authors="Ravi Peters <ravi.peters@3dgi.nl>"
 LABEL org.opencontainers.image.vendor="3DGI"
@@ -59,7 +59,7 @@ RUN cd /tmp && \
     cmake --install . && \
     rm -rf /tmp/*
 
-ARG GDAL_VERSION=3.9.1
+ARG GDAL_VERSION=3.9.3
 RUN cd /tmp && \
     wget http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz && \
     tar -zxvf gdal-${GDAL_VERSION}.tar.gz && \
@@ -73,7 +73,7 @@ RUN cd /tmp && \
 CMD ["bash"]
 
 # # install geoflow
-FROM base as build-geoflow
+FROM base AS build-geoflow
 COPY ./strip-docker-image-export /tmp/
 RUN cd /tmp && \
     git clone https://github.com/geoflow3d/geoflow-bundle.git && cd geoflow-bundle && \
@@ -96,7 +96,7 @@ RUN mkdir /tmp/export && \
     -f /usr/local/lib/geoflow-plugins/gfp_las.so
 
 # install crop
-FROM base as build-crop
+FROM base AS build-crop
 COPY ./strip-docker-image-export /tmp/
 RUN cd /tmp && \
     git clone https://github.com/3DGI/roofer.git && cd roofer && \
@@ -114,14 +114,14 @@ RUN mkdir /tmp/export && \
     -d /tmp/export \
     -f /usr/local/bin/crop
 
-FROM base as pyenv
+FROM base AS pyenv
 SHELL ["/bin/bash", "-c"]
 ARG JOBS
 RUN mkdir /dim_pipeline && cd /dim_pipeline && \
     python3 -m venv roofenv && \
     pip3 install numpy==1.26.4 && \
     source /dim_pipeline/roofenv/bin/activate && \
-    pip3 install shapely rtree wheel click fiona numpy==1.26.4 && \ 
+    pip3 install shapely rtree wheel click fiona==1.9.6 numpy==1.26.4 && \ 
     pip3 install --no-cache-dir --force-reinstall 'numpy==1.26.4' 'GDAL[numpy]'
 
 # install opencv
@@ -160,7 +160,7 @@ RUN cd /tmp && \
 
 RUN apt-get update && apt-get -y install
 
-FROM python:3.11-slim-bookworm as geoflow-dim-runner
+FROM python:3.11-slim-bookworm AS geoflow-dim-runner
 COPY --from=base /usr/local/share/gdal/ /usr/local/share/gdal
 COPY --from=base /usr/local/share/proj /usr/local/share/proj
 COPY --from=build-geoflow /tmp/export/usr/ /usr
